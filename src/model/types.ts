@@ -43,6 +43,7 @@ export type Contract = {
   txhash: string
   chainid: string
   claimsstart: number
+  gdaactive: boolean
   mintstart: number
 }
 
@@ -87,6 +88,7 @@ export interface StepperFormProps {
 export enum TemplateTier {
   FREE = 'free',
   LOW = 'low',
+  PRICE_MAGIC = 'price-magic'
 }
 
 export type Claim = {

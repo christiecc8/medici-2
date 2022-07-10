@@ -12,25 +12,13 @@ import { getContractClaimStatus, getContractCover } from '../../utils/retrieve'
 import Countdown from './Countdown'
 const localenv = CONFIG.DEV
 
-interface LowTierProps {
+interface PriceMagicProps {
   claim: Claim;
   contractName?: string;
   isPreview: boolean;
 }
-const abi = [
-  'function tokenURI(uint256 tokenId) public view returns (string memory)',
-  'function name() public view returns (string memory)',
-  'function masterAddress() public view returns (string memory)',
-  'function mint(address account,uint256 numOfTokensToMint) external payable',
-];
-// const provider = new ethers.providers.JsonRpcProvider(
-//   'https://opt-mainnet.g.alchemy.com/v2/aZAch5n6Co6vvepI37ogK-QLiCmofL04'
-// )
-const provider = new ethers.providers.JsonRpcProvider(
-  'https://rpc.ankr.com/eth_goerli'
-);
 
-const LowTier: React.FC<LowTierProps> = ({
+const PriceMagic: React.FC<PriceMagicProps> = ({
   claim,
   contractName,
   isPreview,
@@ -110,7 +98,7 @@ const LowTier: React.FC<LowTierProps> = ({
         const price = await contract.price()
         const tx = await contract.mint(connectedWallet?.address, 1, {
           value: price,
-          gasLimit: 9000000,
+          gasLimit: 30000000,
         });
         const mintResponse = await tx.wait();
         console.log(mintResponse);
@@ -138,7 +126,7 @@ const LowTier: React.FC<LowTierProps> = ({
         const price = await contract.price()
         const tx = await contract.claim(connectedWallet?.address, 1, verifiedProof, {
           value: price,
-          gasLimit: 9000000,
+          gasLimit: 30000000,
         })
         const claimResponse = await tx.wait()
         console.log(claimResponse)
@@ -279,14 +267,15 @@ const LowTier: React.FC<LowTierProps> = ({
           </div>
         </div>
         <div className="flex items-center justify-between mb-12">
-          {claim.description}
+          {/* {claim.description} */}
+          "TESETINGNGIINEIN"
         </div>
         <div className="flex flex-col justify-between leading-10 text-white/60 w-full">
           <h5 className="text-xl text-white mb-2">Details</h5>
           <table className="w-full">
             <tbody>
               <tr>
-                <td>Contract Address</td>
+                <td>TESTF</td>
                 <td className="text-right text-white">
                   <a
                     className=""
@@ -395,7 +384,7 @@ const LowTier: React.FC<LowTierProps> = ({
               {connectedWallet
                 ? minting
                   ? 'Minting...'
-                  : 'Mint Now'
+                  : 'Mint Nowish'
                 : 'Connect Wallet'}
             </button>
           ))}
@@ -457,4 +446,4 @@ const LowTier: React.FC<LowTierProps> = ({
   );
 };
 
-export default LowTier
+export default PriceMagic

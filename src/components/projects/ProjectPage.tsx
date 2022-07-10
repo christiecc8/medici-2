@@ -143,6 +143,7 @@ const ProjectPage: React.FC<{ contractName: string }> = ({contractName}) => {
         txhash,
         chainid,
         claimsstart,
+        gdaactive,
         mintstart,
       } = res
       setContract({
@@ -153,6 +154,7 @@ const ProjectPage: React.FC<{ contractName: string }> = ({contractName}) => {
         txhash,
         chainid,
         claimsstart,
+        gdaactive,
         mintstart
       })
     }
