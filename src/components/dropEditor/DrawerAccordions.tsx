@@ -170,7 +170,7 @@ const DrawerAccordions: React.FC<Props> = ({
               >
                 <FormControlLabel value="free" control={<Radio />} label="Free" />
                 <FormControlLabel value="low" control={<Radio />} label="Low" />
-                <FormControlLabel value="Institute" control={<Radio />} label="Institute" />
+                <FormControlLabel value="institute" control={<Radio />} label="Institute" />
                 <FormControlLabel
                   value="mid"
                   control={<Radio />}
@@ -227,7 +227,7 @@ const DrawerAccordions: React.FC<Props> = ({
         </Accordion>
       </Box>
     );
-    case TemplateTier.PRICE_MAGIC:
+    case TemplateTier.INSTITUTE:
     return (
       <Box>
         <Accordion expanded={expandedAccordion === Accordions.DETAIL}>
@@ -368,7 +368,7 @@ const DrawerAccordions: React.FC<Props> = ({
               >
                 <FormControlLabel value="free" control={<Radio />} label="Free" />
                 <FormControlLabel value="low" control={<Radio />} label="Low" />
-                <FormControlLabel value="Institute" control={<Radio />} label="Institute" />
+                <FormControlLabel value="institute" control={<Radio />} label="Institute" />
                 <FormControlLabel
                   value="mid"
                   control={<Radio />}
@@ -566,7 +566,7 @@ const DrawerAccordions: React.FC<Props> = ({
               >
                 <FormControlLabel value="free" control={<Radio />} label="Free" />
                 <FormControlLabel value="low" control={<Radio />} label="Low" />
-                <FormControlLabel value="Institute" control={<Radio />} label="Institute" />
+                <FormControlLabel value="institute" control={<Radio />} label="Institute" />
                 <FormControlLabel
                   value="mid"
                   control={<Radio />}

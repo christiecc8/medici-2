@@ -168,10 +168,12 @@ const DropEditor: React.FC<{}> = () => {
   };
 
   const changeFormState = (key: string, value?: string) => {
+    
     const newFormState = {
       ...formState,
       [key]: value,
     };
+    console.log(newFormState);
     setFormState(newFormState);
     validateForm(newFormState);
   };

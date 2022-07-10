@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import FreeTier from '../components/templates/freetier';
 import LowTier from '../components/templates/lowtier';
-import PriceMagic from '../components/templates/lowtier';
+import Institute from '../components/templates/institute';
 import { Claim, TemplateTier } from '../model/types';
 import { API_ENDPOINT, API_PATHS } from '../utils/config';
 
@@ -21,9 +21,9 @@ export const ClaimPageRenderer: React.FC<{
           isPreview={isPreview}
         />
       );
-      case TemplateTier.PRICE_MAGIC:
+      case TemplateTier.INSTITUTE:
       return (
-        <PriceMagic
+        <Institute
           claim={claim}
           contractName={contractName}
           isPreview={isPreview}
