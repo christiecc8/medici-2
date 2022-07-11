@@ -42,6 +42,8 @@ export type Contract = {
   contractaddress: string
   txhash: string
   chainid: string
+  claimsstart: number
+  mintstart: number
 }
 
 export type WalletContextReturn = {
@@ -127,6 +129,17 @@ export type FormState = {
 
 export type ChainConfigReturn = {
   network: string
+  url: string
   factory: string
   claims: string
+}
+
+export interface Chain {
+  namespace?: 'evm'
+  id: string
+  rpcUrl: string
+  label: string
+  token: string
+  color?: string
+  icon?: string
 }

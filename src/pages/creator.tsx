@@ -1,14 +1,14 @@
-import React, { useState } from 'react'
-import PageOne from '../components/creator/PageOne'
-import PageTwo from '../components/creator/PageTwo'
-import PageThree from '../components/creator/PageThree'
-import PageFour from '../components/creator/PageFour'
-import PageFive from '../components/creator/PageFive'
-import PageSix from '../components/creator/PageSix'
-import AlphaBanner from '../components/home/AlphaBanner'
+import React, { useState } from 'react';
+import PageOne from '../components/creator/PageOne';
+import PageTwo from '../components/creator/PageTwo';
+import PageThree from '../components/creator/PageThree';
+import PageFour from '../components/creator/PageFour';
+import PageFive from '../components/creator/PageFive';
+import PageSix from '../components/creator/PageSix';
+import AlphaBanner from '../components/home/AlphaBanner';
 
 const Creator: React.FC<{}> = () => {
-  const [step, setStep] = useState<number>(1)
+  const [step, setStep] = useState<number>(1);
 
   const [params, setParams] = useState<any>({
     collection_type: '',
@@ -24,11 +24,11 @@ const Creator: React.FC<{}> = () => {
     merkleRoot: '',
     claimStartBlock: '',
     mintStartBlock: '',
-  })
+  });
 
   const nextStep = () => {
-    setStep(step + 1)
-  }
+    setStep(step + 1);
+  };
 
   const handleInputData = async (
     input: any,
@@ -38,9 +38,9 @@ const Creator: React.FC<{}> = () => {
     setParams((prevState: any) => ({
       ...prevState,
       [input]: value,
-    }))
-    return Promise.resolve(true)
-  }
+    }));
+    return Promise.resolve(true);
+  };
 
   switch (step) {
     case 1:
@@ -52,7 +52,7 @@ const Creator: React.FC<{}> = () => {
             data={params}
           />
         </div>
-      )
+      );
     case 2:
       return (
         <PageTwo
@@ -60,7 +60,7 @@ const Creator: React.FC<{}> = () => {
           handleInputData={handleInputData}
           data={params}
         />
-      )
+      );
     case 3:
       return (
         <PageThree
@@ -68,7 +68,7 @@ const Creator: React.FC<{}> = () => {
           handleInputData={handleInputData}
           data={params}
         />
-      )
+      );
     case 4:
       return (
         <PageFour
@@ -76,7 +76,7 @@ const Creator: React.FC<{}> = () => {
           handleInputData={handleInputData}
           data={params}
         />
-      )
+      );
     case 5:
       return (
         <PageFive
@@ -84,7 +84,7 @@ const Creator: React.FC<{}> = () => {
           handleInputData={handleInputData}
           data={params}
         />
-      )
+      );
     case 6:
       return (
         <PageSix
@@ -92,10 +92,10 @@ const Creator: React.FC<{}> = () => {
           handleInputData={handleInputData}
           data={params}
         />
-      )
+      );
     default:
-      return <div className="App"></div>
+      return <div className="App"></div>;
   }
-}
+};
 
-export default Creator
+export default Creator;
