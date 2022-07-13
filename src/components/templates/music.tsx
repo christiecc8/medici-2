@@ -7,11 +7,14 @@ import { FaDiscord } from 'react-icons/fa';
 import { Claim } from '../../model/types';
 import useWallet from '../../hooks/useWallet';
 import { API_ENDPOINT, API_PATHS, CONFIG } from '../../utils/config';
+import { Box, Button } from '@mui/material';
+import { getContractCover } from '../../utils/retrieve';
 const localenv = CONFIG.DEV;
 
 interface MusicProps {
   claim: Claim;
   contractName?: string;
+  isPreview: boolean;
 }
 const abi = [
   'function tokenURI(uint256 tokenId) public view returns (string memory)',
@@ -30,6 +33,8 @@ const Music: React.FC<MusicProps> = ({ claim, contractName }) => {
   const { wallet, connect } = useWallet();
 
   const connectedWallet = wallet?.accounts[0];
+
+  const audioElementRef = React.useRef<HTMLAudioElement>();
 
   const [playing, setPlaying] = React.useState(true);
   const [name, setName] = React.useState<string>();
@@ -51,29 +56,9 @@ const Music: React.FC<MusicProps> = ({ claim, contractName }) => {
   }, [claim]);
 
   const getCoverImage = React.useCallback(async () => {
-    const headers = new Headers();
-    headers.set('Content-Type', 'application/json');
-    const res = await fetch(`${API_ENDPOINT}${API_PATHS.CLAIM_COVER}`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({
-        contractName,
-      }),
-    })
-      .then((res) => {
-        if (res.status === 200) {
-          return res.blob();
-        } else {
-          throw new Error(res.statusText);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
-    if (res) {
-      const imageURl = URL.createObjectURL(res);
-      setCover(imageURl);
+    if (contractName) {
+      const res = await getContractCover(contractName);
+      setCover(res);
     }
   }, [contractName]);
 
@@ -120,14 +105,21 @@ const Music: React.FC<MusicProps> = ({ claim, contractName }) => {
     name,
   ]);
 
-  console.log(
-    `linear-gradient(180deg, ${claim.primaryColor} 0%, ${claim.secondaryColor} 100%)`
-  );
+  React.useEffect(() => {
+    if (audioElementRef.current) {
+      if (playing) {
+        audioElementRef.current.play();
+      } else {
+        audioElementRef.current.pause();
+      }
+    }
+  }, [playing]);
 
   return (
     <div className="w-full h-full flex flex-col md:flex-row items-center justify-center text-white relative md:overflow-hidden px-0 md:px-8 apply-font">
       {/* Added so that the page is rendered using the font */}
       <div className="hidden">
+        {/* @ts-expect-error */}
         <FontPicker
           activeFontFamily={claim.fontFamily as string}
           apiKey={process.env.REACT_APP_GOOGLE_FONTS_API_KEY!}
@@ -140,7 +132,7 @@ const Music: React.FC<MusicProps> = ({ claim, contractName }) => {
           filter: 'blur(200px)',
         }}
       />
-      <div className="flex flex-col items-start relative z-1 w-full md:w-1/2 h-full py-20 px-2 md:px-12 scrollbar-hide md:overflow-auto">
+      <div className="flex flex-col items-start relative z-1 w-full md:w-1/3 h-full py-20 px-2 md:px-12 scrollbar-hide md:overflow-auto">
         <h1 className="text-6xl mb-4 break-all">{name}</h1>
         <div className="flex items-center justify-between mb-12 w-full">
           <h6 className="uppercase text-xl">{claim.artist ?? ''}</h6>
@@ -203,20 +195,28 @@ const Music: React.FC<MusicProps> = ({ claim, contractName }) => {
           </table>
         </div>
       </div>
-      <div className="flex flex-col justify-center relative z-1 w-full md:w-1/2 h-full p-8 pb-2 md:pb-8 bg-black/50">
-        <div className="bg-white w-full p-10 rounded-xl my-10">
-          <div className="relative flex justify-between w-full h-[300px] md:h-[450px]">
+      <div className="flex flex-col justify-center relative z-1 w-full md:w-2/3 h-full p-8 pb-2 md:pb-8 bg-black/50">
+        <div className="bg-black/80 w-full h-full p-10 rounded-xl">
+          <div className="relative flex w-full h-[300px] md:h-[450px]">
             <div
-              className="w-[300px] md:w-[450px] h-full animate-spin-slow overflow-hidden rounded-full"
+              className="bg-black/95 w-[300px] md:w-[450px] h-full animate-spin-slow overflow-hidden rounded-full relative flex items-center justify-center"
               style={{
                 animationPlayState: playing ? 'running' : 'paused',
               }}
             >
               <img
-                src="blue_smoke_web.png"
-                className="object-cover"
-                alt={name ?? ''}
+                src={cover}
+                className="object-cover z-10 h-full w-full"
+                alt={name}
               />
+              <div className="text-3xl text-white z-10 absolute top-8 break-all w-1/2 text-center">
+                {name}
+              </div>
+              <div className="text-xl text-white z-10 absolute bottom-8 break-all w-1/2 text-center">
+                {claim.artist}
+              </div>
+              <div className="h-[100px] w-[100px] rounded-full z-10 bg-black absolute " />
+              <div className="h-[30px] w-[30px] rounded-full z-10 bg-gray-500 absolute " />
             </div>
             <img
               src="https://vinylblade.com/_nuxt/img/arm.f195722.png"
@@ -228,8 +228,46 @@ const Music: React.FC<MusicProps> = ({ claim, contractName }) => {
               }}
               alt=""
             />
+            <audio
+              className="hidden"
+              preload="auto"
+              loop
+              src="http://rocknation.su/upload/mp3/Eagles/1976%20-%20Hotel%20California/01.%20Hotel%20California.mp3"
+              ref={(element) =>
+                (audioElementRef.current = element ?? undefined)
+              }
+            />
           </div>
-          <button onClick={() => setPlaying((val) => !val)}>Play</button>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              marginTop: '40px',
+            }}
+          >
+            <Button
+              sx={{
+                borderColor: '#000',
+                border: '1px solid',
+                backgroundColor: '#000',
+                color: 'white',
+                height: '80px',
+                borderRadius: '8px',
+                ':hover': {
+                  backgroundColor: '#000',
+                },
+              }}
+              size="large"
+              onClick={() => setPlaying((val) => !val)}
+            >
+              <div
+                className={`${
+                  playing ? 'bg-red-500' : 'bg-red-500/50'
+                } h-2 w-2 rounded-full mr-2`}
+              ></div>
+              Start/Stop
+            </Button>
+          </Box>
         </div>
         {txHash ? (
           <a
