@@ -108,7 +108,11 @@ const Music: React.FC<MusicProps> = ({ claim, contractName }) => {
   React.useEffect(() => {
     if (audioElementRef.current) {
       if (playing) {
-        audioElementRef.current.play();
+        setTimeout(() => {
+          audioElementRef &&
+            audioElementRef.current &&
+            audioElementRef.current.play();
+        }, 200);
       } else {
         audioElementRef.current.pause();
       }
