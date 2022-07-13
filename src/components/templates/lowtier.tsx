@@ -208,7 +208,7 @@ const LowTier: React.FC<LowTierProps> = ({
           txhash,
           chainid,
           claimsstart,
-          gdaactive,
+          gda_active,
           mintstart,
         } = res
         setContract({
@@ -219,7 +219,7 @@ const LowTier: React.FC<LowTierProps> = ({
           txhash,
           chainid,
           claimsstart,
-          gdaactive,
+          gda_active,
           mintstart
         })
       }

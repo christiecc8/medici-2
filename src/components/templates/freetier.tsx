@@ -214,7 +214,7 @@ const FreeTier: React.FC<FreeTierProps> = ({
           txhash,
           chainid,
           claimsstart,
-          gdaactive,
+          gda_active,
           mintstart,
         } = res
         setContract({
@@ -225,7 +225,7 @@ const FreeTier: React.FC<FreeTierProps> = ({
           txhash,
           chainid,
           claimsstart,
-          gdaactive,
+          gda_active,
           mintstart
         })
       }

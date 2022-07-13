@@ -43,7 +43,7 @@ export type Contract = {
   txhash: string
   chainid: string
   claimsstart: number
-  gdaactive: boolean
+  gda_active: boolean
   mintstart: number
 }
 

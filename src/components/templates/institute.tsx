@@ -1,15 +1,15 @@
-import { BigNumber, ethers, utils } from 'ethers'
-import React from 'react'
-import FontPicker from 'font-picker-react'
-import { BsTwitter } from 'react-icons/bs'
-import { HiOutlineMail } from 'react-icons/hi'
-import { FaDiscord } from 'react-icons/fa'
-import { Claim, Contract } from '../../model/types'
-import useWallet from '../../hooks/useWallet'
-import { API_ENDPOINT, API_PATHS, CONFIG } from '../../utils/config'
-import { getContract, verifyMerkleProof } from '../../utils/web3'
-import { getContractClaimStatus, getContractCover } from '../../utils/retrieve'
-const localenv = CONFIG.DEV
+import { BigNumber, ethers, utils } from 'ethers';
+import React from 'react';
+import FontPicker from 'font-picker-react';
+import { BsTwitter } from 'react-icons/bs';
+import { HiOutlineMail } from 'react-icons/hi';
+import { FaDiscord } from 'react-icons/fa';
+import { Claim, Contract } from '../../model/types';
+import useWallet from '../../hooks/useWallet';
+import { API_ENDPOINT, API_PATHS, CONFIG } from '../../utils/config';
+import { getContract, verifyMerkleProof } from '../../utils/web3';
+import { getContractClaimStatus, getContractCover } from '../../utils/retrieve';
+const localenv = CONFIG.DEV;
 
 interface InstituteProps {
   claim: Claim;
@@ -38,21 +38,25 @@ const Institute: React.FC<InstituteProps> = ({
   const [verifiedProof, setVerifiedProof] = React.useState<string>();
   const [contractStatus, setContractStatus] = React.useState<string>();
   const [etherscanUrl, setEtherscanUrl] = React.useState<string>();
+  const [tokenPrice, setTokenPrice] = React.useState<string>();
 
   const getEtherscanUrl = React.useCallback(async () => {
     if (contract) {
       if (contract.chainid === '5') {
-        setEtherscanUrl("https://goerli.etherscan.io/tx/")
+        setEtherscanUrl('https://goerli.etherscan.io/tx/');
       } else if (contract.chainid === '10') {
-        setEtherscanUrl("https://optimistic.etherscan.io/tx/")
+        setEtherscanUrl('https://optimistic.etherscan.io/tx/');
       }
     }
-  }, [contract])
+  }, [contract]);
 
   const getContractStatus = React.useCallback(async () => {
     if (contract) {
       try {
-        const { success, status } = await getContractClaimStatus(contract.name, contract.chainid)
+        const { success, status } = await getContractClaimStatus(
+          contract.name,
+          contract.chainid
+        );
         if (success) {
           setContractStatus(status);
         }
@@ -60,39 +64,42 @@ const Institute: React.FC<InstituteProps> = ({
         alert('Could not get contract status');
       }
     }
-  }, [contract])
+  }, [contract]);
 
   const isAllowlistMember = React.useCallback(async () => {
     if (connectedWallet && contract) {
       try {
-        const { success, merkleProof } = await verifyMerkleProof(contract.name, connectedWallet.address)
+        const { success, merkleProof } = await verifyMerkleProof(
+          contract.name,
+          connectedWallet.address
+        );
         setIsVerified(success);
         setVerifiedProof(merkleProof);
       } catch {
-        setIsVerified(false)
+        setIsVerified(false);
       }
     }
-  }, [connectedWallet, contract])
+  }, [connectedWallet, contract]);
 
   const getName = React.useCallback(async () => {
     if (claim && contract) {
-    const currContract = await getContract(claim.contract, contract.chainid)
-    const collectionName = await currContract.name()
-    setName(collectionName)
+      const currContract = await getContract(claim.contract, contract.chainid);
+      const collectionName = await currContract.name();
+      setName(collectionName);
     }
-  }, [claim, contract])
+  }, [claim, contract]);
 
   const getContractOwner = React.useCallback(async () => {
     if (claim && contract) {
-    const currContract = await getContract(claim.contract, contract.chainid)
-    const contractOwner = await currContract.masterAddress()
-    setMasterAddress(contractOwner)
+      const currContract = await getContract(claim.contract, contract.chainid);
+      const contractOwner = await currContract.masterAddress();
+      setMasterAddress(contractOwner);
     }
-  }, [claim, contract])
+  }, [claim, contract]);
 
   const getCoverImage = React.useCallback(async () => {
     if (contractName) {
-      const res = await getContractCover(contractName)
+      const res = await getContractCover(contractName);
       setCover(res);
     }
   }, [contractName]);
@@ -101,11 +108,19 @@ const Institute: React.FC<InstituteProps> = ({
     if (wallet && connectedWallet) {
       setMinting(true);
       try {
-        await setChain({chainId: utils.hexValue(BigNumber.from(claim.chainid))})
-        const walletProvider = new ethers.providers.Web3Provider(wallet.provider);
-        const signer = walletProvider.getSigner(connectedWallet?.address)
-        const contract = new ethers.Contract(claim.contract, localenv.contract.instanceAbi, signer)
-        const price = await contract.price()
+        await setChain({
+          chainId: utils.hexValue(BigNumber.from(claim.chainid)),
+        });
+        const walletProvider = new ethers.providers.Web3Provider(
+          wallet.provider
+        );
+        const signer = walletProvider.getSigner(connectedWallet?.address);
+        const contract = new ethers.Contract(
+          claim.contract,
+          localenv.contract.instanceAbi,
+          signer
+        );
+        const price = await contract.price();
         const tx = await contract.mint(connectedWallet?.address, 1, {
           value: price,
           gasLimit: 9000000,
@@ -129,18 +144,31 @@ const Institute: React.FC<InstituteProps> = ({
     if (wallet && connectedWallet && isVerified && verifiedProof !== null) {
       setClaiming(true);
       try {
-        await setChain({chainId: utils.hexValue(BigNumber.from(claim.chainid))})
-        const walletProvider = new ethers.providers.Web3Provider(wallet.provider)
-        const signer = walletProvider.getSigner(connectedWallet?.address)
-        const contract = new ethers.Contract(claim.contract, localenv.contract.instanceAbi, signer)
-        const price = await contract.price()
-        const tx = await contract.claim(connectedWallet?.address, 1, verifiedProof, {
-          value: price,
-          gasLimit: 9000000,
-        })
-        const claimResponse = await tx.wait()
-        console.log(claimResponse)
-        setClaimTxHash(claimResponse.transactionHash)
+        await setChain({
+          chainId: utils.hexValue(BigNumber.from(claim.chainid)),
+        });
+        const walletProvider = new ethers.providers.Web3Provider(
+          wallet.provider
+        );
+        const signer = walletProvider.getSigner(connectedWallet?.address);
+        const contract = new ethers.Contract(
+          claim.contract,
+          localenv.contract.instanceAbi,
+          signer
+        );
+        const price = await contract.price();
+        const tx = await contract.claim(
+          connectedWallet?.address,
+          1,
+          verifiedProof,
+          {
+            value: price,
+            gasLimit: 9000000,
+          }
+        );
+        const claimResponse = await tx.wait();
+        console.log(claimResponse);
+        setClaimTxHash(claimResponse.transactionHash);
       } catch (error: any) {
         if (error.message) {
           alert(error.message);
@@ -152,19 +180,48 @@ const Institute: React.FC<InstituteProps> = ({
       }
     }
   };
+  const getTokenPrice = async () => {
+    // TODO set provider via network     
+    // Also I think we should set this at the top level of the app and pass it down
+    const rpcProvider = new ethers.providers.JsonRpcProvider("https://eth-goerli.g.alchemy.com/v2/grAlP1D1PuQ_P95BTqXJ_mH2caVF5UeC");
+      const currContract = new ethers.Contract(
+        claim.contract,
+        localenv.contract.claim_abi,
+        rpcProvider
+      );
+      var price;
+      if (contract?.gda_active) {
+        price = await currContract.price();
+      } else {
+        price = await currContract.price();
+        
+      }
+      console.log('price', price);
+      setTokenPrice(ethers.utils.formatEther(price));
+  };
+  // not sure if this is the best way to do this
+  // goal is to get price right away on load
+  // i think it needs a callback and to hook into the useEffect below
+  // but am noob
+  React.useEffect(() => {
+    (async () => {
+      await getTokenPrice()
+    })()
+  })
 
   React.useEffect(() => {
     if (contractName && !name && !masterAddress && !cover && !contractStatus) {
       getName();
       getContractOwner();
       getCoverImage();
-      getEtherscanUrl()
+      getEtherscanUrl();
+      // getTokenPrice();
     }
     if (contractName && !isPreview) {
-      isAllowlistMember()
-    } 
+      isAllowlistMember();
+    }
     if (contract) {
-      getContractStatus()
+      getContractStatus();
     }
   }, [
     getName,
@@ -182,59 +239,77 @@ const Institute: React.FC<InstituteProps> = ({
     masterAddress,
     name,
     etherscanUrl,
-    getEtherscanUrl
+    getEtherscanUrl,
+    // getTokenPrice
   ]);
 
   React.useEffect(() => {
-    ;(async () => {
+    (async () => {
       if (contractName) {
-      const params = new URLSearchParams({
-        collection: contractName
-      })
-      const headers = new Headers()
-      headers.set('Content-Type', 'application/json')
-      const res = await fetch(`${API_ENDPOINT}${API_PATHS.GET_CONTRACT_BY_NAME}?` + params, {
-        method: 'GET',
-        headers,
-      }).then((res) => {
-        if (res.status === 200) {
-          return res.json()
-        } else {
-          throw new Error(res.statusText)
+        const params = new URLSearchParams({
+          collection: contractName,
+        });
+        const headers = new Headers();
+        headers.set('Content-Type', 'application/json');
+        const res = await fetch(
+          `${API_ENDPOINT}${API_PATHS.GET_CONTRACT_BY_NAME}?` + params,
+          {
+            method: 'GET',
+            headers,
+          }
+        )
+          .then((res) => {
+            if (res.status === 200) {
+              return res.json();
+            } else {
+              throw new Error(res.statusText);
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        if (res !== undefined) {
+          const {
+            name,
+            symbol,
+            masteraddress,
+            contractaddress,
+            txhash,
+            chainid,
+            claimsstart,
+            gda_active,
+            mintstart,
+          } = res;
+          console.log('ello', res);
+          setContract({
+            name,
+            symbol,
+            masteraddress,
+            contractaddress,
+            txhash,
+            chainid,
+            claimsstart,
+            gda_active,
+            mintstart,
+          });
         }
-      }).catch((error) => {
-        console.log(error)
-      })
-      if (res !== undefined) {
-        const {
-          name,
-          symbol,
-          masteraddress,
-          contractaddress,
-          txhash,
-          chainid,
-          claimsstart,
-          gdaactive,
-          mintstart,
-        } = res
-        setContract({
-          name,
-          symbol,
-          masteraddress,
-          contractaddress,
-          txhash,
-          chainid,
-          claimsstart,
-          gdaactive,
-          mintstart
-        })
       }
-    }
+    })();
+  }, [contractName]);
+
+  React.useEffect(() => {
+    (async () => {
+      await getTokenPrice();
     })()
-  }, [contractName])
+    const interval = setInterval(async () => {
+      console.log('This will run every 12 seconds!');
+      await getTokenPrice();
+    }, 1200);
+    return () => clearInterval(interval);
+  });
+
 
   return (
-
     <div className="w-full h-full flex flex-col items-center justify-center text-white relative md:overflow-hidden px-0 md:px-8 apply-font">
       <div className="hidden">
         {/* @ts-expect-error */}
@@ -250,70 +325,66 @@ const Institute: React.FC<InstituteProps> = ({
         }}
       />
       <div className="flex flex-col items-center relative z-1 w-full h-full py-20 px-2 md:px-12 scrollbar-hide md:overflow-auto">
-      <div className="flex items-center p-2 m-10 gap-2 rounded-3xl bg-[#1b1a1f] drop-shadow-lg">
-        <span className="md:text-xl p-3 rounded-2xl">Contract: 
-          <a
-            className="mx-2"
-            href={`${etherscanUrl}${claim?.contract}`}
-            target="_blank"
-            rel="noreferrer"
-          >
-            {claim?.contract?.slice(0, 6)}...
-            {claim?.contract?.slice(-6)}
-          </a>
-        </span>
-        <div className="flex flex-row space-x-3">
-        {claim.discord && (
-          <a
-            href={claim.discord}
-            target="_blank"
-            rel="nofollow, noreferrer"
-          >
-            <FaDiscord size="40" />
-          </a>
-        )}
-        {claim.email && (
-          <a href={claim.email} target="_blank" rel="nofollow, noreferrer">
-            <HiOutlineMail size="40" />
-          </a>
-        )}
-        {claim.twitter && (
-          <a
-            href={claim.twitter}
-            target="_blank"
-            rel="nofollow, noreferrer"
-          >
-            <BsTwitter size="40" />
-          </a>
-        )}
+        <div className="flex items-center p-2 m-10 gap-2 rounded-3xl bg-[#1b1a1f] drop-shadow-lg">
+          <span className="md:text-xl p-3 rounded-2xl">
+            Contract:
+            <a
+              className="mx-2"
+              href={`${etherscanUrl}${claim?.contract}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {claim?.contract?.slice(0, 6)}...
+              {claim?.contract?.slice(-6)}
+            </a>
+          </span>
+          <div className="flex flex-row space-x-3">
+            {claim.discord && (
+              <a
+                href={claim.discord}
+                target="_blank"
+                rel="nofollow, noreferrer"
+              >
+                <FaDiscord size="40" />
+              </a>
+            )}
+            {claim.email && (
+              <a href={claim.email} target="_blank" rel="nofollow, noreferrer">
+                <HiOutlineMail size="40" />
+              </a>
+            )}
+            {claim.twitter && (
+              <a
+                href={claim.twitter}
+                target="_blank"
+                rel="nofollow, noreferrer"
+              >
+                <BsTwitter size="40" />
+              </a>
+            )}
+          </div>
         </div>
-      </div>
-      <div className="flex items-center p-2 m-10 gap-2 rounded-3xl bg-[#1b1a1f] drop-shadow-lg">
-        <span className="md:text-xl p-3 rounded-2xl">Price: 
-          <a
-            className="mx-2"
-            href={`${etherscanUrl}${claim?.contract}`}
-            target="_blank"
-            rel="noreferrer"
-          >
-            {contract?.gdaactive ? "price✨" : "price"}
-          </a>
-        </span>
-      </div>
-       <div className="overflow-hidden rounded-2xl drop-shadow-xl md:w-2/5">
-          <img
-            src={cover}
-            alt=""
-            className="object-cover"
-          />
+        <div className="flex items-center p-2 m-10 gap-2 rounded-3xl bg-[#1b1a1f] drop-shadow-lg">
+          <span className="md:text-xl p-3 rounded-2xl">
+            Price:
+            <a
+              className="mx-2"
+              href={`${etherscanUrl}${claim?.contract}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {contract?.gda_active ? `${tokenPrice}✨` : `${tokenPrice}`}
+            </a>
+          </span>
         </div>
-        {contractStatus === 'none' && 
-          (
+        <div className="overflow-hidden rounded-2xl drop-shadow-xl md:w-2/5">
+          <img src={cover} alt="" className="object-cover" />
+        </div>
+        {contractStatus === 'none' && (
           <button className="p-4 rounded-3xl text-2xl bg-[#1b1a1f] text-white w-40 mx-auto my-4 disabled:bg-gray-500">
             Mint not active
           </button>
-          )
-        }
+        )}
         {contractStatus === 'claim' &&
           (isVerified ? (
             claimTxHash ? (
@@ -327,15 +398,17 @@ const Institute: React.FC<InstituteProps> = ({
               </a>
             ) : (
               <button
-              className="p-4 rounded-3xl text-2xl bg-[#1b1a1f] text-white w-40 mx-auto my-4 disabled:bg-gray-500 drop-shadow-lg"
+                className="p-4 rounded-3xl text-2xl bg-[#1b1a1f] text-white w-40 mx-auto my-4 disabled:bg-gray-500 drop-shadow-lg"
                 onClick={
-                  connectedWallet ? () => claimOnContract() : () => 
-                  connect({
-                    autoSelect: { 
-                      label: 'Wallet Connect',
-                      disableModals: false
-                    }
-                  })
+                  connectedWallet
+                    ? () => claimOnContract()
+                    : () =>
+                        connect({
+                          autoSelect: {
+                            label: 'Wallet Connect',
+                            disableModals: false,
+                          },
+                        })
                 }
                 disabled={claiming}
               >
@@ -366,13 +439,15 @@ const Institute: React.FC<InstituteProps> = ({
             <button
               className="p-4 rounded-3xl text-2xl bg-[#1b1a1f] text-white w-40 mx-auto my-4 disabled:bg-gray-500 drop-shadow-lg"
               onClick={
-                connectedWallet ? () => mint() : () => 
-                connect({
-                  autoSelect: { 
-                    label: 'Wallet Connect',
-                    disableModals: false
-                  }
-                })
+                connectedWallet
+                  ? () => mint()
+                  : () =>
+                      connect({
+                        autoSelect: {
+                          label: 'Wallet Connect',
+                          disableModals: false,
+                        },
+                      })
               }
               disabled={minting}
             >
@@ -383,19 +458,22 @@ const Institute: React.FC<InstituteProps> = ({
                   : 'Mint Never'
                 : 'Connect Wallet'}
             </button>
-        ))}
-        <a 
-          target="_blank"
-          rel="noreferrer"
-          href="/">
+          ))}
+        <a target="_blank" rel="noreferrer" href="/">
           <div className="text-right text-sm text-white flex justify-end">
-          powered by{' '}
-          <img src="/logo.png" alt="Medici logo" width={20} className="mx-1" />
-          Medici
+            powered by{' '}
+            <img
+              src="/logo.png"
+              alt="Medici logo"
+              width={20}
+              className="mx-1"
+            />
+            Medici
           </div>
         </a>
+      </div>
     </div>
-    </div>
-  )};
+  );
+};
 
-export default Institute
+export default Institute;
