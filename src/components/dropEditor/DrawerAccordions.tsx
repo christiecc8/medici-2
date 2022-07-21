@@ -136,7 +136,6 @@ const DrawerAccordions: React.FC<Props> = ({
         Font
       </AccordionSummary>
       <AccordionDetails>
-        {/* @ts-expect-error */}
         <FontPicker
           apiKey={process.env.REACT_APP_GOOGLE_FONTS_API_KEY!}
           activeFontFamily={formState.fontFamily}

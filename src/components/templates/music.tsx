@@ -4,11 +4,12 @@ import FontPicker from 'font-picker-react';
 import { BsTwitter } from 'react-icons/bs';
 import { HiOutlineMail } from 'react-icons/hi';
 import { FaDiscord } from 'react-icons/fa';
-import { Claim } from '../../model/types';
+import { Claim, TemplateTier } from '../../model/types';
 import useWallet from '../../hooks/useWallet';
-import { API_ENDPOINT, API_PATHS, CONFIG } from '../../utils/config';
+import { CONFIG } from '../../utils/config';
 import { Box, Button } from '@mui/material';
 import { getContractCover } from '../../utils/retrieve';
+import { getTierPricing } from '../../utils/web3';
 const localenv = CONFIG.DEV;
 
 interface MusicProps {
@@ -29,7 +30,7 @@ const provider = new ethers.providers.JsonRpcProvider(
   'https://rpc.ankr.com/eth_goerli'
 );
 
-const Music: React.FC<MusicProps> = ({ claim, contractName }) => {
+const Music: React.FC<MusicProps> = ({ claim, contractName, isPreview }) => {
   const { wallet, connect } = useWallet();
 
   const connectedWallet = wallet?.accounts[0];
@@ -42,6 +43,7 @@ const Music: React.FC<MusicProps> = ({ claim, contractName }) => {
   const [cover, setCover] = React.useState<string>();
   const [minting, setMinting] = React.useState<boolean>(false);
   const [txHash, setTxHash] = React.useState<string>();
+  const [price, setPrice] = React.useState<string>();
 
   const getName = React.useCallback(async () => {
     const contract = new ethers.Contract(claim.contract, abi, provider);
@@ -61,6 +63,11 @@ const Music: React.FC<MusicProps> = ({ claim, contractName }) => {
       setCover(res);
     }
   }, [contractName]);
+
+  const getPrice = React.useCallback(async () => {
+    const price = await getTierPricing(wallet, TemplateTier.MUSIC);
+    setPrice(price);
+  }, [wallet]);
 
   const mint = async () => {
     if (wallet && connectedWallet) {
@@ -106,6 +113,12 @@ const Music: React.FC<MusicProps> = ({ claim, contractName }) => {
   ]);
 
   React.useEffect(() => {
+    if (wallet) {
+      getPrice();
+    }
+  }, [wallet, getPrice]);
+
+  React.useEffect(() => {
     if (audioElementRef.current) {
       if (playing) {
         setTimeout(() => {
@@ -120,12 +133,11 @@ const Music: React.FC<MusicProps> = ({ claim, contractName }) => {
   }, [playing]);
 
   return (
-    <div className="w-full h-full flex flex-col md:flex-row items-center justify-center text-white relative md:overflow-hidden px-0 md:px-8 apply-font">
+    <div className="w-full h-full flex flex-col md:flex-row items-center justify-between text-white relative md:overflow-hidden px-0 apply-font">
       {/* Added so that the page is rendered using the font */}
       <div className="hidden">
-        {/* @ts-expect-error */}
         <FontPicker
-          activeFontFamily={claim.fontFamily as string}
+          activeFontFamily={(claim.fontFamily as string) || ''}
           apiKey={process.env.REACT_APP_GOOGLE_FONTS_API_KEY!}
         />
       </div>
@@ -136,23 +148,25 @@ const Music: React.FC<MusicProps> = ({ claim, contractName }) => {
           filter: 'blur(200px)',
         }}
       />
-      <div className="flex flex-col items-start relative z-1 w-full md:w-1/3 h-full py-20 px-2 md:px-12 scrollbar-hide md:overflow-auto">
-        <h1 className="text-6xl mb-4 break-all">{name}</h1>
-        <div className="flex items-center justify-between mb-12 w-full">
-          <h6 className="uppercase text-xl">{claim.artist ?? ''}</h6>
-          <div className="flex items-center space-x-2">
+      {
+        <header
+          className={`${
+            isPreview ? 'absolute' : 'fixed'
+          } top-0 left-0 flex items-start justify-between w-full p-4`}
+        >
+          <div className="flex flex-1 items-center space-x-2 w-full">
             {claim.discord && (
               <a
                 href={claim.discord}
                 target="_blank"
                 rel="nofollow, noreferrer"
               >
-                <FaDiscord size="20" />
+                <FaDiscord size="30" />
               </a>
             )}
             {claim.email && (
               <a href={claim.email} target="_blank" rel="nofollow, noreferrer">
-                <HiOutlineMail size="20" />
+                <HiOutlineMail size="30" />
               </a>
             )}
             {claim.twitter && (
@@ -161,11 +175,35 @@ const Music: React.FC<MusicProps> = ({ claim, contractName }) => {
                 target="_blank"
                 rel="nofollow, noreferrer"
               >
-                <BsTwitter size="20" />
+                <BsTwitter size="30" />
               </a>
             )}
           </div>
-        </div>
+          <div className="flex-1 text-2xl">{price && `${price} ETH`}</div>
+          <button
+            className="p-4 rounded-full bg-[#1b1a1f] text-white w-36 mx-auto disabled:bg-gray-500 drop-shadow-lg"
+            onClick={connectedWallet ? () => mint() : () => connect({})}
+            disabled={minting}
+          >
+            {connectedWallet
+              ? minting
+                ? 'Minting...'
+                : 'Mint Now'
+              : 'Connect Wallet'}
+          </button>
+        </header>
+      }
+      <div
+        className={`flex flex-col items-start relative z-1 w-full md:w-1/4 h-full py-20 pt-40 px-2 ${
+          isPreview ? 'md:px-6' : 'md:px-12'
+        } scrollbar-hide md:overflow-auto`}
+      >
+        <h1 className="text-6xl mb-4 break-all">{name}</h1>
+        {claim.artist && (
+          <div className="flex items-center justify-between mb-12 w-full">
+            <h6 className="uppercase text-xl">{claim.artist ?? ''}</h6>
+          </div>
+        )}
         <div className="flex items-center justify-between mb-12">
           {claim.description}
         </div>
@@ -199,8 +237,8 @@ const Music: React.FC<MusicProps> = ({ claim, contractName }) => {
           </table>
         </div>
       </div>
-      <div className="flex flex-col justify-center relative z-1 w-full md:w-2/3 h-full p-8 pb-2 md:pb-8 bg-black/50">
-        <div className="bg-black/80 w-full h-full p-10 rounded-xl">
+      <div className="flex justify-around items-start relative z-1 w-2/3 h-[600px] p-8 pt-0 pb-2 md:pb-8">
+        <div className="h-full p-10 rounded-xl bg-zinc-100/5 backdrop-blur-sm min-w-[655px]">
           <div className="relative flex w-full h-[300px] md:h-[450px]">
             <div
               className="bg-black/95 w-[300px] md:w-[450px] h-full animate-spin-slow overflow-hidden rounded-full relative flex items-center justify-center"
@@ -242,64 +280,59 @@ const Music: React.FC<MusicProps> = ({ claim, contractName }) => {
               }
             />
           </div>
-          <Box
+        </div>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            alignItems: 'flex-end',
+            flexDirection: 'column',
+            marginTop: '40px',
+            padding: '0 10px 0 20px',
+            height: '100%',
+          }}
+        >
+          <Button
             sx={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              marginTop: '40px',
-            }}
-          >
-            <Button
-              sx={{
-                borderColor: '#000',
-                border: '1px solid',
+              backgroundColor: '#000',
+              color: 'white',
+              height: '80px',
+              borderRadius: '8px',
+              ':hover': {
                 backgroundColor: '#000',
-                color: 'white',
-                height: '80px',
-                borderRadius: '8px',
-                ':hover': {
-                  backgroundColor: '#000',
-                },
-              }}
-              size="large"
-              onClick={() => setPlaying((val) => !val)}
+              },
+            }}
+            size="large"
+            onClick={() => setPlaying((val) => !val)}
+          >
+            <div
+              className={`${
+                playing ? 'bg-red-500' : 'bg-red-500/50'
+              } h-2 w-2 rounded-full mr-2`}
+            ></div>
+            Start/Stop
+          </Button>
+          {txHash && (
+            <a
+              className="px-5 py-2 rounded-2xl text-sm bg-emerald-800 text-white w-64 mx-auto text-center my-4"
+              href={`${localenv.network.txEtherscanUrl}${txHash}`}
+              target="_blank"
+              rel="noreferrer"
             >
-              <div
-                className={`${
-                  playing ? 'bg-red-500' : 'bg-red-500/50'
-                } h-2 w-2 rounded-full mr-2`}
-              ></div>
-              Start/Stop
-            </Button>
-          </Box>
-        </div>
-        {txHash ? (
-          <a
-            className="px-5 py-2 rounded-2xl text-sm bg-emerald-800 text-white w-64 mx-auto text-center my-4"
-            href={`${localenv.network.txEtherscanUrl}${txHash}`}
-            target="_blank"
-            rel="noreferrer"
-          >
-            Success: Check transaction
-          </a>
-        ) : (
-          <button
-            className="px-5 py-2 rounded-2xl text-sm bg-[#1b1a1f] text-white w-40 mx-auto my-4 disabled:bg-gray-500"
-            onClick={connectedWallet ? () => mint() : () => connect({})}
-            disabled={minting}
-          >
-            {connectedWallet
-              ? minting
-                ? 'Minting...'
-                : 'Mint Now'
-              : 'Connect Wallet'}
-          </button>
-        )}
-        <div className="text-right text-sm text-white flex justify-end mt-4 md:mt-0">
-          powered by{' '}
-          <img src="/logo.png" alt="Medici logo" width={20} className="mx-1" />
-          Medici
-        </div>
+              Success: Check transaction
+            </a>
+          )}
+          <div className="text-right text-sm text-white flex justify-end mt-4">
+            powered by{' '}
+            <img
+              src="/logo.png"
+              alt="Medici logo"
+              width={20}
+              className="mx-1"
+            />
+            Medici
+          </div>
+        </Box>
       </div>
     </div>
   );
