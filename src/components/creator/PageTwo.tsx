@@ -11,7 +11,7 @@ const PageTwo: React.FC<StepperFormProps> = ({
   handleInputData,
   data,
 }) => {
-  const { wallet, connect, setChain, connectedChain } = useWallet();
+  const { currentChain } = useWallet();
   const [nameChecked, setNameChecked] = useState<boolean>(false);
   const [isNameAvailable, setIsNameAvailable] = useState(false);
   const [timer, setTimer] = useState<any>(null);
@@ -35,7 +35,7 @@ const PageTwo: React.FC<StepperFormProps> = ({
   };
 
   const nameCheck = async (name: string) => {
-    await readyToTransact(wallet, connect, setChain);
+    // await readyToTransact(wallet, connect, setChain);
 
     if (name === '') {
       setNameChecked(false);
@@ -49,7 +49,7 @@ const PageTwo: React.FC<StepperFormProps> = ({
         const newTimer = setTimeout(async () => {
           const isNameAvailable = await getNameAvailability(
             name,
-            connectedChain!.id
+            currentChain!.hexId
           );
           if (isNameAvailable) {
             await handleInputData('name', name);
@@ -94,7 +94,7 @@ const PageTwo: React.FC<StepperFormProps> = ({
           )}
         </label>
       </div>
-      <div className="text-center p-10 md:mt-10">
+      <div className="text-center p-10 md:mt-[20%] m-10">
         <div className="space-y-5">
           <h1 className="text-3xl md:text-5xl bg-transparent inline w-fit text-center tracking-wide text-transparent bg-clip-text text-[#9403fc] font-semibold">
             What will you name your project?

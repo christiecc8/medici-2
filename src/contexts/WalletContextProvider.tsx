@@ -1,11 +1,10 @@
 import React from 'react'
 import { init, useConnectWallet, useSetChain, useWallets } from '@web3-onboard/react'
 import injectedModule from '@web3-onboard/injected-wallets'
-import { CONFIG } from '../utils/config'
+import { GET_CHAIN_BY_HEX_ID } from '../model/chains'
 
 import { WalletContextReturn } from '../model/types'
 
-const localenv = CONFIG.DEV;
 const injected = injectedModule()
 
 const initialValue: WalletContextReturn = {
@@ -13,9 +12,9 @@ const initialValue: WalletContextReturn = {
   disconnect: (options) => Promise.resolve(),
   wallet: null,
   connecting: false,
-  connectedChain: null,
   settingChain: false,
   setChain: (options) => Promise.resolve(false),
+  currentChain: null,
 }
 
 export const WalletContext = React.createContext(initialValue)
@@ -27,7 +26,13 @@ const onboard = init({
       id: '0xa',
       token: 'ETH',
       label: 'Optimistic Mainnet',
-      rpcUrl: 'https://opt-mainnet.g.alchemy.com/v2/aZAch5n6Co6vvepI37ogK-QLiCmofL04'
+      rpcUrl: 'https://opt-mainnet.g.alchemy.com/v2/aZAch5n6Co6vvepI37ogK-QLiCmofL04',
+    },
+    {
+      id: '0x89',
+      token: 'MATIC',
+      label: 'Polygon Matic',
+      rpcUrl: "https://polygon-mainnet.g.alchemy.com/v2/7-JPJoVkE3meApP_qeQ7SAfYCj_YthdR",
     },
     // {
     // id: '0x1',
@@ -75,8 +80,9 @@ const WalletContextProvider: React.FC<React.PropsWithChildren<{}>> = ({
   children,
 }) => {
   const [{ wallet, connecting }, connect, disconnect] = useConnectWallet()
-  const [{ chains, connectedChain, settingChain }, setChain] = useSetChain()
-
+  const [{ connectedChain, settingChain }, setChain] = useSetChain()
+  const currentChain = connectedChain ? GET_CHAIN_BY_HEX_ID(connectedChain?.id) : null
+  
   return (
     <WalletContext.Provider
       value={{
@@ -84,9 +90,9 @@ const WalletContextProvider: React.FC<React.PropsWithChildren<{}>> = ({
         connect,
         disconnect,
         connecting,
-        connectedChain,
         setChain,
         settingChain,
+        currentChain
       }}
     >
       {children}

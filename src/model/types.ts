@@ -2,9 +2,7 @@ import type {
   ConnectOptions,
   DisconnectOptions,
   WalletState,
-  ConnectedChain,
 } from '@web3-onboard/core';
-import type { BigNumber, Wallet } from 'ethers';
 
 export type Owner = {
   id: string;
@@ -56,8 +54,8 @@ export type WalletContextReturn = {
     chainNamespace?: string;
     wallet?: WalletState['label'];
   }) => Promise<boolean>;
-  connectedChain: ConnectedChain | null;
   settingChain: boolean;
+  currentChain: Chain | null;
 };
 
 export type ProjectContextReturn = {
@@ -137,8 +135,10 @@ export type ChainConfigReturn = {
 
 export interface Chain {
   namespace?: 'evm';
-  id: string;
+  id: number;
+  hexId: string;
   rpcUrl: string;
+  etherscanUrl: string;
   label: string;
   token: string;
   color?: string;

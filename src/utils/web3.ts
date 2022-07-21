@@ -4,6 +4,7 @@ import { ContractCreationProps, Contract } from '../model/types'
 import { API_PATHS, CONFIG } from './config'
 import apiClient from './apiClient'
 import { getChainConfig } from './retrieve';
+import { Chain } from '../model/types';
 const localenv = CONFIG.DEV;
 
 /* -------------------------------------------------------------------------- */
@@ -81,7 +82,6 @@ const getFactoryContract = async (callerWallet: any): Promise<ethers.Contract> =
 export const generateNewContract = (callerWallet: any, merkleRoot: string, props: ContractCreationProps): any => {
   return new Promise( async (resolve, reject ) => {
     const FactoryContract = await getFactoryContract(callerWallet);
-    console.log(FactoryContract);
       /* From Factory Contract:
      function createContract(
         string memory _name,
@@ -96,6 +96,7 @@ export const generateNewContract = (callerWallet: any, merkleRoot: string, props
         uint256 _mintStartBlock
       ) 
       */
+     console.log(props)
       try {
         const result_contract = await FactoryContract.createContract(
         props.name, // name
@@ -142,11 +143,13 @@ export const whitelist = async (contractName: string, chainId: string, whitelist
 }
 
 /* call to verify backend results */
-export const getNewLaunchedContract = async (masterAddress: string, callerWallet: any): Promise<Contract> => {
+export const getNewLaunchedContract = async (masterAddress: string, chain: Chain): Promise<Contract> => {
   const request_data = {
       "masterAddress": masterAddress,
-      "chainID": parseInt(callerWallet.chains[0].id, 16)
+      "chainID": chain.id
   }
+  console.log("Getting new launched contract")
+  console.log(request_data)
   return apiClient.post(
       localenv.api.paths.getNewLaunchedContract, request_data,
       {
@@ -221,14 +224,23 @@ export const readyToTransact = async (callerWallet: any, connect: any, setChain:
 /*                    Contract Instance Interaction Methods                   */
 /* -------------------------------------------------------------------------- */
 
-export const getContract = async (contractAddress: string, chainid: string):Promise<ethers.Contract> => {
-    const chainConfig = await getChainConfig(chainid)
-    const url = chainConfig.url.replace("wss://", "https://")
-    // console.log("RPC URL: " + url)
-    const provider = new ethers.providers.JsonRpcProvider(url)
+// export const getContract = async (contractAddress: string, chainid: string):Promise<ethers.Contract> => {
+//     const chainConfig = await getChainConfig(chainid)
+//     const url = chainConfig.url.replace("wss://", "https://")
+//     // console.log("RPC URL: " + url)
+//     const provider = new ethers.providers.JsonRpcProvider(url)
 
-    const myContract = new ethers.Contract(contractAddress, localenv.contract.instanceAbi, provider);
-    return myContract;
+//     const myContract = new ethers.Contract(contractAddress, localenv.contract.instanceAbi, provider);
+//     return myContract;
+// }
+
+export const getContract = async (contractAddress: string, chain: Chain):Promise<ethers.Contract> => {
+  const chainConfig = await getChainConfig(chain.id.toString());
+  const url = chainConfig.url.replace("wss://", "https://")
+  const provider = new ethers.providers.JsonRpcProvider(url)
+
+  const myContract = new ethers.Contract(contractAddress, localenv.contract.instanceAbi, provider);
+  return myContract;
 }
 
 export const getContractForTransactions = async (callerWallet: any, contractAddress: string):Promise<ethers.Contract> => {

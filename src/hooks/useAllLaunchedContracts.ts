@@ -1,7 +1,6 @@
-import React from 'react';
 import useSWR from 'swr';
 import apiClient from '../utils/apiClient';
-import { ethers, utils } from 'ethers';
+import { utils } from 'ethers';
 import { CONFIG } from '../utils/config';
 
 import { Contract } from '../model/types';
@@ -15,7 +14,7 @@ type UseProjectsReturn = {
 
 const useAllLaunchedContracts = (
   masterAddress: string,
-  connectedChain: string
+  chainid: number
 ): UseProjectsReturn => {
   // console.log("Getting contracts for " + masterAddress + " on chain " + connectedChain)
   const { data, error } = useSWR<Array<Contract>>(
@@ -26,7 +25,7 @@ const useAllLaunchedContracts = (
           url,
           {
             masterAddress: utils.getAddress(masterAddress),
-            chainID: parseInt(connectedChain, 16),
+            chainID: chainid
           },
           {
             headers: { 'Content-Type': 'application/json' },

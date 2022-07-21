@@ -4,11 +4,12 @@ import FontPicker from 'font-picker-react';
 import { BsTwitter } from 'react-icons/bs';
 import { HiOutlineMail } from 'react-icons/hi';
 import { FaDiscord } from 'react-icons/fa';
-import { Claim, Contract } from '../../model/types';
+import { Claim, Contract, Chain } from '../../model/types';
 import useWallet from '../../hooks/useWallet';
 import { API_ENDPOINT, API_PATHS, CONFIG } from '../../utils/config';
 import { getContract, verifyMerkleProof } from '../../utils/web3';
 import { getContractClaimStatus, getContractCover } from '../../utils/retrieve';
+import { GET_CHAIN_BY_ID } from '../../model/chains';
 import Countdown from './Countdown';
 const localenv = CONFIG.DEV;
 
@@ -17,18 +18,6 @@ interface LowTierProps {
   contractName?: string;
   isPreview: boolean;
 }
-const abi = [
-  'function tokenURI(uint256 tokenId) public view returns (string memory)',
-  'function name() public view returns (string memory)',
-  'function masterAddress() public view returns (string memory)',
-  'function mint(address account,uint256 numOfTokensToMint) external payable',
-];
-// const provider = new ethers.providers.JsonRpcProvider(
-//   'https://opt-mainnet.g.alchemy.com/v2/aZAch5n6Co6vvepI37ogK-QLiCmofL04'
-// )
-const provider = new ethers.providers.JsonRpcProvider(
-  'https://rpc.ankr.com/eth_goerli'
-);
 
 const LowTier: React.FC<LowTierProps> = ({
   claim,
@@ -50,6 +39,7 @@ const LowTier: React.FC<LowTierProps> = ({
   const [isVerified, setIsVerified] = React.useState<boolean>();
   const [verifiedProof, setVerifiedProof] = React.useState<string>();
   const [contractStatus, setContractStatus] = React.useState<string>();
+  const [projectChain, setProjectChain] = React.useState<Chain>();
 
   const getContractStatus = React.useCallback(async () => {
     if (contract) {
@@ -60,12 +50,13 @@ const LowTier: React.FC<LowTierProps> = ({
         );
         if (success) {
           setContractStatus(status);
+          console.log('contract status ' + status);
         }
       } catch {
         alert('Could not get contract status');
       }
     }
-  }, [contract, contractStatus]);
+  }, [contract]);
 
   const isAllowlistMember = React.useCallback(async () => {
     if (connectedWallet && contract) {
@@ -80,23 +71,23 @@ const LowTier: React.FC<LowTierProps> = ({
         setIsVerified(false);
       }
     }
-  }, [connectedWallet, isVerified, contract]);
+  }, [connectedWallet, contract]);
 
   const getName = React.useCallback(async () => {
-    if (claim && contract) {
-      const currContract = await getContract(claim.contract, contract.chainid);
+    if (claim && contract && projectChain) {
+      const currContract = await getContract(claim.contract, projectChain);
       const collectionName = await currContract.name();
       setName(collectionName);
     }
-  }, [claim, contract]);
+  }, [claim, contract, projectChain]);
 
   const getContractOwner = React.useCallback(async () => {
-    if (claim && contract) {
-      const currContract = await getContract(claim.contract, contract.chainid);
+    if (claim && contract && projectChain) {
+      const currContract = await getContract(claim.contract, projectChain);
       const contractOwner = await currContract.masterAddress();
       setMasterAddress(contractOwner);
     }
-  }, [claim, contract]);
+  }, [claim, contract, projectChain]);
 
   const getCoverImage = React.useCallback(async () => {
     if (contractName) {
@@ -106,12 +97,10 @@ const LowTier: React.FC<LowTierProps> = ({
   }, [contractName]);
 
   const mint = async () => {
-    if (wallet && connectedWallet) {
+    if (wallet && connectedWallet && projectChain) {
       setMinting(true);
       try {
-        await setChain({
-          chainId: utils.hexValue(BigNumber.from(claim.chainid)),
-        });
+        await setChain({ chainId: projectChain.hexId });
         const walletProvider = new ethers.providers.Web3Provider(
           wallet.provider
         );
@@ -142,12 +131,16 @@ const LowTier: React.FC<LowTierProps> = ({
   };
 
   const claimOnContract = async () => {
-    if (wallet && connectedWallet && isVerified && verifiedProof !== null) {
+    if (
+      wallet &&
+      connectedWallet &&
+      isVerified &&
+      verifiedProof !== null &&
+      projectChain
+    ) {
       setClaiming(true);
       try {
-        await setChain({
-          chainId: utils.hexValue(BigNumber.from(claim.chainid)),
-        });
+        await setChain({ chainId: projectChain.hexId });
         const walletProvider = new ethers.providers.Web3Provider(
           wallet.provider
         );
@@ -188,9 +181,12 @@ const LowTier: React.FC<LowTierProps> = ({
       getContractOwner();
       getCoverImage();
     }
-    if (contractName && !isPreview) {
+    if (contractName && !contractStatus) {
       isAllowlistMember();
       getContractStatus();
+    }
+    if (contract && !projectChain) {
+      setProjectChain(GET_CHAIN_BY_ID(parseInt(contract.chainid)));
     }
   }, [
     getName,
@@ -200,10 +196,11 @@ const LowTier: React.FC<LowTierProps> = ({
     getContractStatus,
     contractName,
     contract,
-    isPreview,
     cover,
     masterAddress,
     name,
+    projectChain,
+    setProjectChain,
   ]);
 
   React.useEffect(() => {
@@ -320,7 +317,9 @@ const LowTier: React.FC<LowTierProps> = ({
                 <td className="text-right text-white">
                   <a
                     className=""
-                    href={`${localenv.network.addressEtherscanUrl}${claim?.contract}`}
+                    href={`${localenv.network.addressEtherscanUrl}/address/${
+                      claim!.contract
+                    }`}
                     target="_blank"
                     rel="noreferrer"
                   >
@@ -364,7 +363,7 @@ const LowTier: React.FC<LowTierProps> = ({
             claimTxHash ? (
               <a
                 className="px-5 py-2 rounded-2xl text-sm bg-emerald-800 text-white w-64 mx-auto text-center my-4"
-                href={`${localenv.network.txEtherscanUrl}${claimTxHash}`}
+                href={`${localenv.network.txEtherscanUrl}/tx/${claimTxHash}`}
                 target="_blank"
                 rel="noreferrer"
               >
@@ -403,7 +402,7 @@ const LowTier: React.FC<LowTierProps> = ({
           (txHash ? (
             <a
               className="px-5 py-2 rounded-2xl text-sm bg-emerald-800 text-white w-64 mx-auto text-center my-4"
-              href={`${localenv.network.txEtherscanUrl}${txHash}`}
+              href={`${localenv.network.txEtherscanUrl}/tx/${txHash}`}
               target="_blank"
               rel="noreferrer"
             >
@@ -456,8 +455,7 @@ const LowTier: React.FC<LowTierProps> = ({
           </button>
         ))
         } */}
-        {!isPreview &&
-          contract &&
+        {contract &&
           contractStatus === 'none' &&
           (isVerified ? (
             <div className="inline-flex gap-1">
@@ -470,24 +468,30 @@ const LowTier: React.FC<LowTierProps> = ({
               starts
             </div>
           ))}
-        {!isPreview && contract && contractStatus === 'claim' && (
-          <div className="inline-flex gap-1">
-            <Countdown countdownBlock={contract?.mintstart} /> until mint starts
-          </div>
-        )}
+        {contract &&
+          contractStatus &&
+          (contractStatus === 'claim' || contractStatus === 'none') && (
+            <div className="inline-flex gap-1">
+              <Countdown countdownBlock={contract?.mintstart} /> until mint
+              starts
+            </div>
+          )}
         {/* { (!(isPreview) && contract) && <div className="inline-flex gap-1"><Countdown countdownBlock={contract?.mintstart}/> until mint </div> } */}
-        <a target="_blank" rel="noreferrer" href="/">
-          <div className="text-right text-sm text-white flex justify-end mt-4 md:mt-0">
-            powered by{' '}
-            <img
-              src="/logo.png"
-              alt="Medici logo"
-              width={20}
-              className="mx-1"
-            />
-            Medici
-          </div>
-        </a>
+
+        <div className="text-right text-sm text-white flex justify-end mt-4 md:mt-0">
+          <a target="_blank" rel="noreferrer" href="/">
+            <div className="flex w-fit">
+              powered by{' '}
+              <img
+                src="/logo.png"
+                alt="Medici logo"
+                width={20}
+                className="mx-1"
+              />
+              Medici
+            </div>
+          </a>
+        </div>
       </div>
     </div>
   );
