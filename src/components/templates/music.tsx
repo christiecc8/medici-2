@@ -136,6 +136,7 @@ const Music: React.FC<MusicProps> = ({ claim, contractName, isPreview }) => {
     <div className="w-full h-full flex flex-col md:flex-row items-center justify-between text-white relative md:overflow-hidden px-0 apply-font">
       {/* Added so that the page is rendered using the font */}
       <div className="hidden">
+        {/* @ts-expect-error */}
         <FontPicker
           activeFontFamily={(claim.fontFamily as string) || ''}
           apiKey={process.env.REACT_APP_GOOGLE_FONTS_API_KEY!}
