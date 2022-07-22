@@ -5,6 +5,7 @@ import FreeTier from '../components/templates/freetier';
 import LowTier from '../components/templates/lowtier';
 import { Claim, TemplateTier } from '../model/types';
 import { API_ENDPOINT, API_PATHS } from '../utils/config';
+import Institute from '../components/templates/institute';
 
 export const ClaimPageRenderer: React.FC<{
   claim: Claim;
@@ -12,6 +13,14 @@ export const ClaimPageRenderer: React.FC<{
   isPreview: boolean;
 }> = ({ claim, contractName, isPreview }) => {
   switch (claim.tier) {
+    case TemplateTier.INSTITUTE:
+      return (
+        <Institute
+          claim={claim}
+          contractName={contractName}
+          isPreview={isPreview}
+        />
+      );
     case TemplateTier.LOW:
       return (
         <LowTier

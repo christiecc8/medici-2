@@ -79,7 +79,72 @@ const DrawerIcons: React.FC<Props> = ({ openDrawerAndExpandAccordion, formState 
       </IconButton>
     </>
   );
-
+  case TemplateTier.INSTITUTE:
+    case TemplateTier.LOW:
+    return (
+    <>
+      <IconButton
+        sx={{
+          borderRadius: 1,
+          minWidth: 0,
+          width: '80%',
+          mx: 'auto',
+          my: 4,
+        }}
+        onClick={() => openDrawerAndExpandAccordion(Accordions.DETAIL)}
+      >
+        <TitleIcon />
+      </IconButton>
+      <IconButton
+        sx={{
+          borderRadius: 1,
+          minWidth: 0,
+          width: '80%',
+          mx: 'auto',
+          my: 4,
+        }}
+        onClick={() => openDrawerAndExpandAccordion(Accordions.SOCIAL)}
+      >
+        <LanguageIcon />
+      </IconButton>
+      <IconButton
+        sx={{
+          borderRadius: 1,
+          minWidth: 0,
+          width: '80%',
+          mx: 'auto',
+          my: 4,
+        }}
+        onClick={() => openDrawerAndExpandAccordion(Accordions.FONT)}
+      >
+        <FontDownloadIcon />
+      </IconButton>
+      <IconButton
+        sx={{
+          borderRadius: 1,
+          minWidth: 0,
+          width: '80%',
+          mx: 'auto',
+          my: 4,
+        }}
+        onClick={() => openDrawerAndExpandAccordion(Accordions.TIER)}
+      >
+        <ArticleIcon />
+      </IconButton>
+      <IconButton
+        sx={{
+          borderRadius: 1,
+          minWidth: 0,
+          width: '80%',
+          mx: 'auto',
+          my: 4,
+        }}
+        onClick={() => openDrawerAndExpandAccordion(Accordions.COLORS)}
+      >
+        <PaletteIcon />
+      </IconButton>
+    </>
+  );
   default: 
     return (
       <>

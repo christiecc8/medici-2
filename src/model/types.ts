@@ -85,6 +85,7 @@ export interface StepperFormProps {
 export enum TemplateTier {
   FREE = 'free',
   LOW = 'low',
+  INSTITUTE = 'institute'
 }
 
 export type Claim = {
