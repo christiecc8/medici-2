@@ -1,4 +1,3 @@
-import { ethers } from 'ethers'
 import React from 'react'
 import FontPicker from 'font-picker-react'
 import { BsTwitter } from 'react-icons/bs'
@@ -7,14 +6,13 @@ import { FaDiscord } from 'react-icons/fa'
 import { Chain, Claim, Contract } from '../../model/types'
 import useWallet from '../../hooks/useWallet'
 import { getThumbnails } from '../../utils/reservations'
-import { API_ENDPOINT, API_PATHS, CONFIG } from '../../utils/config'
+import { API_ENDPOINT, API_PATHS } from '../../utils/config'
 import { getContract, verifyMerkleProof } from '../../utils/web3'
 import { getContractClaimStatus, getContractCover } from '../../utils/retrieve'
 import { GET_CHAIN_BY_ID } from '../../model/chains'
 import FeaturedCollectionCard from '../../FeaturedCollectionCard'
 import InfoBox from './InfoBox'
 
-const localenv = CONFIG.DEV
 
 interface FreeTierProps {
   claim: Claim;
@@ -27,7 +25,7 @@ const Institute: React.FC<FreeTierProps> = ({
   contractName,
   isPreview,
 }) => {
-  const { wallet, connect, setChain } = useWallet();
+  const { wallet } = useWallet();
 
   const connectedWallet = wallet?.accounts[0];
 
@@ -36,23 +34,11 @@ const Institute: React.FC<FreeTierProps> = ({
   const [masterAddress, setMasterAddress] = React.useState<string>();
   const [cover, setCover] = React.useState<string>();
   const [thumbnails, setThumbnails] = React.useState<string[]>();
-  const [minting, setMinting] = React.useState<boolean>(false);
-  const [txHash, setTxHash] = React.useState<string>();
-  const [claiming, setClaiming] = React.useState<boolean>(false);
-  const [claimTxHash, setClaimTxHash] = React.useState<string>();
   const [isVerified, setIsVerified] = React.useState<boolean>();
   const [verifiedProof, setVerifiedProof] = React.useState<string>();
   const [contractStatus, setContractStatus] = React.useState<string>();
   const [projectChain, setProjectChain] = React.useState<Chain>();
 
-  const stackSettings = {
-    dots: false,
-    infinite: true,
-    fade: true,
-    speed: 600,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-  };
 
   const getContractStatus = React.useCallback(async () => {
     if (contract && projectChain) {
@@ -118,8 +104,8 @@ const Institute: React.FC<FreeTierProps> = ({
     if (contractName && !name && !masterAddress && !cover && !contractStatus) {
       getName();
       getContractOwner();
-      getCoverImage();
     }
+    getCoverImage();
     if (contractName && !isPreview) {
       isAllowlistMember()
     } 
@@ -214,13 +200,13 @@ const Institute: React.FC<FreeTierProps> = ({
         }}
       />
       <div className="flex flex-col items-center relative z-1 w-full h-full scrollbar-hide overflow-x-hidden mb-12">
-        <div className="drop-shadow-lg items-center flex flex-col w-full max-h-[550px] overflow-x-clip">   
-          <div className="relative w-full h-full aspect-square object-cover overflow-hidden max-h-[550px]">
+        <div className="drop-shadow-lg items-center flex flex-col w-full max-h-[550px] overflow-x-clip h-[500px]">   
+          <div className="relative w-full h-full aspect-square object-cover overflow-hidden">
             <img src={cover} className="block w-full h-full aspect-video object-cover blur-sm"/>
           </div>
-          <div className="absolute h-full left-0 top-0 aspect-square md:aspect-video max-h-[550px] w-full bg-gradient-to-b from-transparent to-black/80 drop-shadow-md overflow-hidden"></div>
-            <div className="aspect-square max-h-[350px] sm:max-h-[500px] p-10 absolute overflow-hidden drop-shadow-xl">
-              <img src={cover} className="block w-full object-cover"/>
+          <div className="absolute h-full left-0 top-0 aspect-square md:aspect-video w-full bg-gradient-to-b from-transparent to-black/80 drop-shadow-md overflow-hidden"></div>
+            <div className="w-[400px] h-[400px] mt-10 object-center absolute overflow-hidden drop-shadow-xl bg-white z-3">
+              <img src={cover} className="w-full h-full object-cover"/>
             </div>
         </div>
         <div className="w-full flex flex-col m-5 px-10 py-5">

@@ -105,7 +105,7 @@ const ClaimPage: React.FC<{}> = () => {
     return null;
   }
   return (
-    <Box sx={{ height: '100vh', marginTop: '-64px' }}>
+    <Box sx={{ height: '150vh', marginTop: '-64px' }}>
       <ClaimPageRenderer
         claim={claim}
         contractName={contractName as string}

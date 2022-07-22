@@ -116,7 +116,7 @@ const InfoBox: React.FC<{ contract: Contract }> = ({ contract }) => {
       }, 2000)
       if (!price) getPrice()
       if (!contractStatus) getContractStatus()
-      isAllowlistMember()
+      if (isVerified === null) isAllowlistMember()
     },
     [price, getPrice,
     blockDifference, setBlockDifference, getBlocksRemaining,
@@ -221,7 +221,7 @@ const InfoBox: React.FC<{ contract: Contract }> = ({ contract }) => {
         target="_blank"
         rel="noreferrer"
         href="/"
-        className="mt-5">
+        >
           <div className="text-right text-sm text-black flex justify-center">
           powered by{' '}
           <img src="/logo-medici-black.svg" alt="Medici logo" width={20} className="mx-1" />
