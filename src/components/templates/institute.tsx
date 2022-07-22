@@ -105,14 +105,14 @@ const Institute: React.FC<FreeTierProps> = ({
       getName();
       getContractOwner();
     }
-    getCoverImage();
+    // getCoverImage();
     if (contractName && !isPreview) {
       isAllowlistMember()
     } 
     if (contract && !contractStatus) {
       getContractStatus()
     }
-    getCollectionThumbnails()
+    // getCollectionThumbnails()
     if (contract && !projectChain) {
       setProjectChain(GET_CHAIN_BY_ID(parseInt(contract.chainid)))
     }
@@ -136,6 +136,15 @@ const Institute: React.FC<FreeTierProps> = ({
     projectChain,
     setProjectChain
   ]);
+
+  React.useEffect(() => {
+    if (!cover) {
+      getCoverImage();
+    }
+    if (!thumbnails) {
+      getCollectionThumbnails()
+    }
+  }, [contractName, cover, thumbnails, getCoverImage, getCollectionThumbnails])
 
   React.useEffect(() => {
     ;(async () => {
@@ -244,22 +253,18 @@ const Institute: React.FC<FreeTierProps> = ({
               {contract && <InfoBox contract={contract}/>}
             </div>
           </div>
-          { thumbnails && (
-          <div>
-            <h1 className="text-4xl mx-5 my-10 font-bold items-center md:items-start">Collection Assets</h1>
+          {thumbnails && <h1 className="text-4xl mx-5 my-10 font-bold items-center md:items-start">Collection Assets</h1>}
             <div className="flex flex-col w-4/5 md:w-full md:grid md:grid-cols-3 gap-5">
             {thumbnails && 
               (Object.keys(thumbnails).map((i: string) => (
-                <FeaturedCollectionCard
-                  imageURL={thumbnails[parseInt(i)]}
-                  index={parseInt(i)}
-                  contractName={contractName!}
-                  colorhex={claim.primaryColor!}
-                />
-              ))) } 
+                  <FeaturedCollectionCard
+                    imageURL={thumbnails[parseInt(i)]}
+                    index={parseInt(i)}
+                    contractName={contractName!}
+                    colorhex={claim.primaryColor!}
+                  />
+            ))) } 
             </div>
-          </div>
-          )} 
       </div>
     </div>
   </div>
