@@ -183,7 +183,7 @@ const DropEditor: React.FC<{}> = () => {
         }
       }
     }
-  }
+  };
 
   const changeFormState = (key: string, value?: string) => {
     const newFormState = {
@@ -219,13 +219,15 @@ const DropEditor: React.FC<{}> = () => {
   const readyToTransact = async (): Promise<boolean> => {
     if (!wallet) {
       await connect({
-        autoSelect: { 
+        autoSelect: {
           label: 'Wallet Connect',
-          disableModals: false
-        }
-      })
+          disableModals: false,
+        },
+      });
     }
-    return setChain({ chainId: utils.hexValue(BigNumber.from(contract!.chainid)) });
+    return setChain({
+      chainId: utils.hexValue(BigNumber.from(contract!.chainid)),
+    });
   };
 
   const onConfirm = async () => {
@@ -234,7 +236,7 @@ const DropEditor: React.FC<{}> = () => {
       const claimReady = await claimsInit(
         wallet,
         contract!.contractaddress,
-        formState.tier as string
+        formState.tier as TemplateTier
       );
 
       if (claimReady) {
@@ -249,6 +251,7 @@ const DropEditor: React.FC<{}> = () => {
           secondaryColor,
           bgColor,
           fontFamily,
+          tier,
         } = formState;
         const params = {
           contract: contract,
@@ -261,6 +264,7 @@ const DropEditor: React.FC<{}> = () => {
           email: email,
           twitter: twitter,
           discord: discord,
+          tier,
         };
         apiClient
           .post(API_PATHS.CLAIM_SETUP, params, {
