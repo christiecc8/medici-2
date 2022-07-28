@@ -45,6 +45,14 @@ body,
   background-repeat: repeat;
 }
 
+.social-icon {
+  text-color: "#8B8B8B"
+}
+
+.social-icon:hover {
+  text-color: "#000000"
+}
+
 .hero-collection:hover {
   box-shadow: 0px 0px 40px 0px #ffffff66;
 }

@@ -7,7 +7,7 @@ import { getContractClaimStatus } from '../../utils/retrieve'
 import { GET_CHAIN_BY_ID } from '../../model/chains'
 
 
-const InfoBox: React.FC<{ contract: Contract }> = ({ contract }) => {
+const InfoBox: React.FC<{ contract: Contract, colorhex: string, secondarycolorhex: string }> = ({ contract, colorhex, secondarycolorhex }) => {
     const { wallet, setChain, connect } = useWallet()
     const connectedWallet = wallet?.accounts[0]
     const [contractStatus, setContractStatus] = useState<string>()
@@ -125,10 +125,10 @@ const InfoBox: React.FC<{ contract: Contract }> = ({ contract }) => {
     ])
 
     return (
-      <div className="space-y-5 w-fit">
-        <div className="w-[400px] flex flex-col rounded-md border-[1.5px] border-[#EAEAEA] px-3 py-3">
+      <div className="w-fit">
+        <div className="w-[400px] flex flex-col rounded-md border-[1.5px] border-[#EAEAEA] px-3 py-3 mb-5 hover:-translate-y-1 transition-all ease-in hover:drop-shadow-sm">
           <div className="flex flex-row gap-2">
-            <div className="block w-1/2 p-2 border-r-[1.5px] border-[#EAEAEA]">
+            <div className="block w-1/2 p-2 border-r-[1.5px] border-[#EAEAEA] drop-shadow-none">
               <h1 className="text-xl font-bold">Price</h1>
               {price && ethers.utils.formatEther(price)} ETH
             </div>
@@ -158,7 +158,11 @@ const InfoBox: React.FC<{ contract: Contract }> = ({ contract }) => {
               </a>
             ) : (
               <button
-              className="bg-black text-white w-full rounded-md py-2 disabled:bg-gray-500 drop-shadow-lg"
+              className={`w-full rounded-md py-2 disabled:bg-gray-500`}
+              style={{
+                background: `${colorhex}`,
+                color: (colorhex === "#1b1a1f" && secondarycolorhex === "#1b1a1f") ? "#FFFFFF" : `${secondarycolorhex}`
+              }}
                 onClick={
                   connectedWallet ? () => claimOnContract() : () => 
                   connect({
@@ -195,7 +199,11 @@ const InfoBox: React.FC<{ contract: Contract }> = ({ contract }) => {
             </a>
           ) : (
             <button
-              className="bg-black text-white w-full rounded-md py-2 disabled:bg-gray-500"
+              className={`w-full rounded-md py-2 disabled:bg-gray-500`}
+              style={{
+                background: `${colorhex}`,
+                color: (colorhex === "#1b1a1f" && secondarycolorhex === "#1b1a1f") ? "#FFFFFF" : `${secondarycolorhex}`
+              }}
               onClick={
                 connectedWallet ? () => mint() : () => 
                 connect({

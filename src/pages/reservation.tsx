@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import useReservedNFTs from '../hooks/useReservedNFTs';
-import { getThumbnails } from '../utils/reservations';
+import { getThumbnails } from '../utils/retrieve';
 import useWallet from '../hooks/useWallet';
 
 import NFTPopup from '../components/reservations/NFTPopup';

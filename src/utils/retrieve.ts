@@ -139,3 +139,48 @@ export const getAllContracts = async (
       });
     });
 };
+
+export const getThumbnails = async (contractName: string): Promise<any> => {
+  const request_data = {
+    "collection": contractName
+  };
+
+  return apiClient.get(
+    API_PATHS.RETRIEVE_THUMBNAILS,
+    { params: request_data }
+  ).then(function(response: any) {
+    return Promise.resolve(response.data)
+  }).catch(function(error) {
+    return Promise.reject(["Error getting thumbnails"])
+  });
+}
+
+export const getOriginals = async (contractName: string): Promise<any> => {
+  const request_data = {
+    "collection": contractName
+  };
+
+  return apiClient.get(
+    API_PATHS.RETRIEVE_ORIGINALS,
+    { params: request_data }
+  ).then(function(response: any) {
+    return Promise.resolve(response.data)
+  }).catch(function(error) {
+    return Promise.reject(["Error getting originals"])
+  });
+}
+
+export const getPreviews = async (contractName: string): Promise<any> => {
+const request_data = {
+  "collection": contractName
+};
+
+return apiClient.get(
+  API_PATHS.RETRIEVE_PREVIEW,
+  { params: request_data }
+).then(function(response: any) {
+  return Promise.resolve(response.data)
+}).catch(function(error) {
+  return Promise.reject(["Error getting previews"])
+});
+}

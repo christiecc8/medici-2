@@ -6,7 +6,7 @@ import { HiOutlineMail } from 'react-icons/hi'
 import { FaDiscord } from 'react-icons/fa'
 import { Chain, Claim, Contract } from '../../model/types'
 import useWallet from '../../hooks/useWallet'
-import { getThumbnails } from '../../utils/reservations'
+import { getOriginals } from '../../utils/retrieve'
 import { API_ENDPOINT, API_PATHS, CONFIG } from '../../utils/config'
 import { getContract, verifyMerkleProof } from '../../utils/web3'
 import { getContractClaimStatus, getContractCover } from '../../utils/retrieve'
@@ -106,7 +106,7 @@ const FreeTier: React.FC<FreeTierProps> = ({
   const getCollectionThumbnails = React.useCallback(async () => {
     try {
       if (contractName) {
-        const res = await getThumbnails(contractName);
+        const res = await getOriginals(contractName);
         setThumbnails(res);
       }
     } catch (error: any) {

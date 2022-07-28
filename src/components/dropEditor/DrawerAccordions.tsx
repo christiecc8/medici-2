@@ -10,6 +10,7 @@ import Radio from '@mui/material/Radio';
 import Box from '@mui/material/Box';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import Checkbox from '@mui/material/Checkbox';
 import FontPicker from 'font-picker-react';
 import { ColorPicker } from 'material-ui-color';
 
@@ -407,6 +408,18 @@ const DrawerAccordions: React.FC<Props> = ({
                   }
                 />
               </div>
+              <div id="secondary-color-picker">
+                <label htmlFor="secondary-color-picker" className="block">
+                  Secondary Color
+                </label>
+                <ColorPicker
+                  value={formState.secondaryColor}
+                  onChange={(event) =>
+                    changeFormState('secondaryColor', `#${event.hex}`)
+                  }
+                />
+              </div>
+              <FormControlLabel value="Use Cover" control={<Checkbox defaultChecked/>} label="Use Cover" onChange={() => {formState.bgColor === "" ? changeFormState('bgColor', false) : changeFormState('bgColor', !formState.bgColor)}} />
             </Stack>
           </AccordionDetails>
         </Accordion>

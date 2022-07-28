@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react'
 import { getContractCover, getContractClaimStatus } from '../../utils/retrieve'
-import { getThumbnails, getPreviews } from '../../utils/reservations'
+import { getThumbnails, getPreviews } from '../../utils/retrieve'
 import { getContract, getContractForTransactions } from '../../utils/web3'
 import useWallet from '../../hooks/useWallet'
 import ProjectPopup from './ProjectPopup'
@@ -251,7 +251,7 @@ useEffect(() => {
           </div>
           <div className="absolute h-full left-0 top-0 aspect-video w-full bg-gradient-to-b from-transparent to-black/80 drop-shadow-md"></div>
         </div>
-        <div className="md:absolute top-72 grid grid-cols-2 grid-rows-2 md:grid-cols-4 md:grid-rows-1 gap-[0.5px] overflow-hidden">
+        <div className="md:absolute top-72 grid grid-cols-2 grid-rows-2 md:grid-cols-4 md:grid-rows-1 gap-[0.5px] w-full">
           <div className="p-5 bg-zinc-400/20 backdrop-blur-sm hover:bg-zinc-50/20 hover:backdrop-blur-lg transition ease-in text-center">
             <h1 className="block text-2xl">Balance</h1>
             {balance && <p className="text-lg">{balance} ETH</p>} 

@@ -5,13 +5,15 @@ import { HiOutlineMail } from 'react-icons/hi'
 import { FaDiscord } from 'react-icons/fa'
 import { Chain, Claim, Contract } from '../../model/types'
 import useWallet from '../../hooks/useWallet'
-import { getThumbnails } from '../../utils/reservations'
+import { getOriginals } from '../../utils/retrieve'
 import { API_ENDPOINT, API_PATHS } from '../../utils/config'
 import { getContract, verifyMerkleProof } from '../../utils/web3'
 import { getContractClaimStatus, getContractCover } from '../../utils/retrieve'
 import { GET_CHAIN_BY_ID } from '../../model/chains'
 import FeaturedCollectionCard from '../../FeaturedCollectionCard'
 import InfoBox from './InfoBox'
+import EtherscanLogo from '../svgComponents/EtherscanLogo'
+import '../../index.css'
 
 
 interface FreeTierProps {
@@ -39,6 +41,7 @@ const Institute: React.FC<FreeTierProps> = ({
   const [contractStatus, setContractStatus] = React.useState<string>();
   const [projectChain, setProjectChain] = React.useState<Chain>();
 
+  const showCover = ((claim.bgColor!.toString() === "true") ? true : (claim.bgColor!.toString() === "false") ? false : true)
 
   const getContractStatus = React.useCallback(async () => {
     if (contract && projectChain) {
@@ -52,18 +55,6 @@ const Institute: React.FC<FreeTierProps> = ({
       }
     }
   }, [contract, projectChain])
-
-  const isAllowlistMember = React.useCallback(async () => {
-    if (connectedWallet && contract) {
-      try {
-        const { success, merkleProof } = await verifyMerkleProof(contract.name, connectedWallet.address)
-        setIsVerified(success);
-        setVerifiedProof(merkleProof);
-      } catch {
-        setIsVerified(false)
-      }
-    }
-  }, [connectedWallet, contract])
 
   const getName = React.useCallback(async () => {
     if (claim && contract && projectChain) {
@@ -91,13 +82,17 @@ const Institute: React.FC<FreeTierProps> = ({
   const getCollectionThumbnails = React.useCallback(async () => {
     try {
       if (contractName) {
-        const res = await getThumbnails(contractName);
+        const res = await getOriginals(contractName);
         setThumbnails(res);
       }
     } catch (error: any) {
      console.log(error.message)
     } 
   }, [contractName])
+
+  const setCoverFromThumbnail = (index: string) => {
+    setCover(thumbnails![parseInt(index)])
+  }
 
 
   React.useEffect(() => {
@@ -106,9 +101,6 @@ const Institute: React.FC<FreeTierProps> = ({
       getContractOwner();
     }
     // getCoverImage();
-    if (contractName && !isPreview) {
-      isAllowlistMember()
-    } 
     if (contract && !contractStatus) {
       getContractStatus()
     }
@@ -121,7 +113,6 @@ const Institute: React.FC<FreeTierProps> = ({
     getContractOwner,
     getCoverImage,
     isVerified,
-    isAllowlistMember,
     contractStatus,
     getContractStatus,
     setContractStatus,
@@ -193,7 +184,7 @@ const Institute: React.FC<FreeTierProps> = ({
   }, [contractName])
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center text-black relative md:overflow-hidden apply-font">
+    <div className="w-full h-full flex flex-col items-center justify-center text-black relative md:overflow-hidden font-helvetica">
       <div className="hidden">
         <FontPicker
           activeFontFamily={(claim.fontFamily as string) ?? undefined}
@@ -207,62 +198,84 @@ const Institute: React.FC<FreeTierProps> = ({
         }}
       />
       <div className="flex flex-col items-center relative z-1 w-full h-full scrollbar-hide overflow-x-hidden mb-12">
-        <div className="drop-shadow-lg items-center flex flex-col w-full max-h-[550px] overflow-x-clip h-[500px]">   
+        <div className="drop-shadow-none items-center flex flex-col w-full max-h-[550px] overflow-x-clip h-[500px]">   
           <div className="relative w-full h-full aspect-square object-cover overflow-hidden">
-            <img src={cover} className="block w-full h-full aspect-video object-cover blur-sm"/>
+            { showCover ? <img src={cover} className="block w-full h-full aspect-video object-cover blur-sm"/> : <div className="block w-full h-full object-cover bg-[#F2F2F2]"/>}
           </div>
-          <div className="absolute h-full left-0 top-0 aspect-square md:aspect-video w-full bg-gradient-to-b from-transparent to-black/80 drop-shadow-md overflow-hidden"></div>
+            { showCover && <div className="absolute h-full left-0 top-0 aspect-square md:aspect-video w-full bg-gradient-to-b from-transparent to-black/80 drop-shadow-md overflow-hidden"/>}
             <div className="w-[400px] h-[400px] mt-10 object-center absolute overflow-hidden drop-shadow-xl bg-white z-3">
               <img src={cover} className="w-full h-full object-cover"/>
             </div>
         </div>
         <div className="w-full flex flex-col m-5 px-10 py-5">
         <div className="flex flex-col lg:flex-row gap-1">
-          <div className="mx-5 space-y-5 mb-10 md:w-3/4">
-            <h1 className="text-5xl font-bold leading-relaxed">{contractName} { claim.artist && `by ${claim.artist}`}</h1>
-              <div>
-              {claim.description}
-              </div>
-            <div className="flex items-center space-x-2">
-                  {claim.discord && (
-                    <a
-                      href={claim.discord}
-                      target="_blank"
-                      rel="nofollow, noreferrer"
-                    >
-                      <FaDiscord size="20" />
-                    </a>
-                  )}
-                  {claim.email && (
-                    <a href={claim.email} target="_blank" rel="nofollow, noreferrer">
-                      <HiOutlineMail size="20" />
-                    </a>
-                  )}
-                  {claim.twitter && (
-                    <a
-                      href={claim.twitter}
-                      target="_blank"
-                      rel="nofollow, noreferrer"
-                    >
-                      <BsTwitter size="20" />
-                    </a>
-                  )}
+          <div className="mx-5 space-y-2 mb-10 md:w-3/4">
+            <h1 className="font-bold text-6xl apply-font">{contractName}</h1>
+            <h2 className="uppercase text-3xl">{ claim.artist && `${claim.artist}`}</h2>
+          <div className="mt-5">
+          {claim.description}
+          </div>
+              <div className="space-y-5">
+                <h1 className="text-4xl font-bold items-center md:items-start mt-10 mb-5">Collection Links</h1>
+                <a href={`${projectChain?.etherscanUrl}/address/${claim!.contract}`}
+                    target="_blank"
+                    rel="nofollow, noreferrer">
+                  <div className="inline-flex gap-2 text-[#8B8B8B] hover:text-black transition-all ease-in">
+                    <EtherscanLogo/>View on Etherscan
+                  </div>
+                <div className="flex items-center space-x-2 mt-2">
+                {claim.discord && (
+                <div className="gap-2 text-[#8B8B8B] hover:text-black transition-all ease-in">
+                  <a
+                    href={claim.discord}
+                    target="_blank"
+                    rel="nofollow, noreferrer"
+                  >
+                    <FaDiscord size="25"
+                    className="social-icon"/>
+                  </a>
                 </div>
+                )}
+                {claim.email && (
+                <div className="gap-2 text-[#8B8B8B] hover:text-black transition-all ease-in">
+                  <a href={claim.email} target="_blank" rel="nofollow, noreferrer">
+                    <HiOutlineMail size="25"
+                    className="social-icon"/>
+                  </a>
+                </div>
+                )}
+                {claim.twitter && (
+                <div className="gap-2 text-[#8B8B8B] hover:text-black transition-all ease-in">
+                  <a
+                    href={claim.twitter}
+                    target="_blank"
+                    rel="nofollow, noreferrer"
+                  >
+                    <BsTwitter size="25"
+                    className="social-icon"/>
+                  </a>
+                </div>
+                )}
+              </div></a>
+              </div>
             </div>
             <div className="m-5">
-              {contract && <InfoBox contract={contract}/>}
+              {contract && <InfoBox contract={contract} colorhex={claim.primaryColor!} secondarycolorhex={claim.secondaryColor!}/>}
             </div>
           </div>
-          {thumbnails && <h1 className="text-4xl mx-5 my-10 font-bold items-center md:items-start">Collection Assets</h1>}
+          {thumbnails && <h1 className="text-4xl mx-5 font-bold items-center md:items-start">Collection Assets</h1>}
             <div className="flex flex-col w-4/5 md:w-full md:grid md:grid-cols-3 gap-5">
             {thumbnails && 
               (Object.keys(thumbnails).map((i: string) => (
+                <div onClick={() => setCoverFromThumbnail(i)}>
                   <FeaturedCollectionCard
                     imageURL={thumbnails[parseInt(i)]}
                     index={parseInt(i)}
                     contractName={contractName!}
                     colorhex={claim.primaryColor!}
+                    secondarycolorhex={claim.secondaryColor!}
                   />
+                </div>
             ))) } 
             </div>
       </div>
