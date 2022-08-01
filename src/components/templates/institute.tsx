@@ -207,23 +207,18 @@ const Institute: React.FC<FreeTierProps> = ({
               <img src={cover} className="w-full h-full object-cover"/>
             </div>
         </div>
-        <div className="w-full flex flex-col m-5 px-10 py-5">
-        <div className="flex flex-col lg:flex-row gap-1">
-          <div className="mx-5 space-y-2 mb-10 md:w-3/4">
+        <div className="w-full flex flex-col m-5 px-16 py-5">
+          <div className="flex flex-col lg:flex-row gap-1">
+          <div className="mx-10 space-y-2 mb-10 md:w-3/4">
             <h1 className="font-bold text-6xl apply-font">{contractName}</h1>
             <h2 className="uppercase text-3xl">{ claim.artist && `${claim.artist}`}</h2>
-          <div className="mt-5">
-          {claim.description}
-          </div>
-              <div className="space-y-5">
-                <h1 className="text-4xl font-bold items-center md:items-start mt-10 mb-5">Collection Links</h1>
-                <a href={`${projectChain?.etherscanUrl}/address/${claim!.contract}`}
-                    target="_blank"
-                    rel="nofollow, noreferrer">
-                  <div className="inline-flex gap-2 text-[#8B8B8B] hover:text-black transition-all ease-in">
-                    <EtherscanLogo/>View on Etherscan
-                  </div>
-                <div className="flex items-center space-x-2 mt-2">
+            <p className="mt-5">{claim.description}</p>
+            <div className="flex items-center space-x-2 mt-2 space-y-5">
+              <div className="gap-2 text-[#8B8B8B] hover:text-black transition-all ease-in mt-4">
+                <a href={`${projectChain?.etherscanUrl}/address/${claim!.contract}`} target="_blank" rel="nofollow, noreferrer">
+                  <EtherscanLogo/>
+                </a>
+              </div>
                 {claim.discord && (
                 <div className="gap-2 text-[#8B8B8B] hover:text-black transition-all ease-in">
                   <a
@@ -231,7 +226,7 @@ const Institute: React.FC<FreeTierProps> = ({
                     target="_blank"
                     rel="nofollow, noreferrer"
                   >
-                    <FaDiscord size="25"
+                    <FaDiscord size="27"
                     className="social-icon"/>
                   </a>
                 </div>
@@ -239,7 +234,7 @@ const Institute: React.FC<FreeTierProps> = ({
                 {claim.email && (
                 <div className="gap-2 text-[#8B8B8B] hover:text-black transition-all ease-in">
                   <a href={claim.email} target="_blank" rel="nofollow, noreferrer">
-                    <HiOutlineMail size="25"
+                    <HiOutlineMail size="27"
                     className="social-icon"/>
                   </a>
                 </div>
@@ -251,23 +246,22 @@ const Institute: React.FC<FreeTierProps> = ({
                     target="_blank"
                     rel="nofollow, noreferrer"
                   >
-                    <BsTwitter size="25"
+                    <BsTwitter size="27"
                     className="social-icon"/>
                   </a>
                 </div>
                 )}
-              </div></a>
               </div>
             </div>
             <div className="m-5">
               {contract && <InfoBox contract={contract} colorhex={claim.primaryColor!} secondarycolorhex={claim.secondaryColor!}/>}
             </div>
           </div>
-          {thumbnails && <h1 className="text-4xl mx-5 font-bold items-center md:items-start">Collection Assets</h1>}
+          {thumbnails && <h1 className="text-4xl font-bold items-center md:items-start">Collection Assets</h1>}
             <div className="flex flex-col w-4/5 md:w-full md:grid md:grid-cols-3 gap-5">
             {thumbnails && 
               (Object.keys(thumbnails).map((i: string) => (
-                <div onClick={() => setCoverFromThumbnail(i)}>
+                <div onClick={() => {window.scrollTo({top: 0, behavior: 'smooth'})}}>
                   <FeaturedCollectionCard
                     imageURL={thumbnails[parseInt(i)]}
                     index={parseInt(i)}
@@ -276,8 +270,8 @@ const Institute: React.FC<FreeTierProps> = ({
                     secondarycolorhex={claim.secondaryColor!}
                   />
                 </div>
-            ))) } 
-            </div>
+          ))) } 
+        </div>
       </div>
     </div>
   </div>
