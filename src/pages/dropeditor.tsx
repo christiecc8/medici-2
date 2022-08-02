@@ -112,6 +112,7 @@ const formInitialState: FormState = {
   secondaryColor: '#1b1a1f',
   bgColor: '',
   fontFamily: '',
+  template: TemplateTier.FREE,
   tier: TemplateTier.FREE,
   chainid: '',
 };
@@ -234,7 +235,7 @@ const DropEditor: React.FC<{}> = () => {
       const claimReady = await claimsInit(
         wallet,
         contract!.contractaddress,
-        formState.tier as string
+        "free"
       );
 
       if (claimReady) {
@@ -261,6 +262,8 @@ const DropEditor: React.FC<{}> = () => {
           email: email,
           twitter: twitter,
           discord: discord,
+          tier: TemplateTier.FREE,
+          template: formState.tier
         };
         apiClient
           .post(API_PATHS.CLAIM_SETUP, params, {

@@ -179,6 +179,7 @@ const getClaimsContract = async (callerWallet: any): Promise<ethers.Contract> =>
 }
 
 export const claimsInit = async (callerWallet: any, contractAddress: string, tier: string): Promise<boolean>=> {
+  console.log("Trying to find price for tier: " + tier)
   if (tier === "free") {
       return Promise.resolve(true);
   } else {

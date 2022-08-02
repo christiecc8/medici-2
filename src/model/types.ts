@@ -91,6 +91,7 @@ export enum TemplateTier {
 export type Claim = {
   contract: string
   tier: TemplateTier | null
+  template: TemplateTier | null
   fontFamily: string | null
   primaryColor: string | null
   secondaryColor: string | null
@@ -123,6 +124,7 @@ export type FormState = {
   bgColor: string
   fontFamily: string
   tier: TemplateTier | null
+  template: TemplateTier | null
   chainid: string
 }
 

@@ -12,7 +12,7 @@ export const ClaimPageRenderer: React.FC<{
   contractName?: string;
   isPreview: boolean;
 }> = ({ claim, contractName, isPreview }) => {
-  switch (claim.tier) {
+  switch (claim.template) {
     case TemplateTier.INSTITUTE:
       return (
         <Institute
@@ -70,6 +70,7 @@ const ClaimPage: React.FC<{}> = () => {
           console.log(error);
         });
       if (res) {
+        console.log(res)
         const {
           artist,
           description,
@@ -81,6 +82,7 @@ const ClaimPage: React.FC<{}> = () => {
           font,
           primarycolor,
           secondarycolor,
+          template,
           tier,
           chainid,
         } = res[0];
@@ -95,6 +97,7 @@ const ClaimPage: React.FC<{}> = () => {
           fontFamily: font,
           primaryColor: primarycolor,
           secondaryColor: secondarycolor,
+          template,
           tier,
           chainid,
         });
