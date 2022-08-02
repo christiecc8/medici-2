@@ -264,7 +264,7 @@ const DropEditor: React.FC<{}> = () => {
           email: email,
           twitter: twitter,
           discord: discord,
-          tier,
+          template: tier,
         };
         apiClient
           .post(API_PATHS.CLAIM_SETUP, params, {
