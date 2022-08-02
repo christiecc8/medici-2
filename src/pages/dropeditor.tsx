@@ -208,14 +208,6 @@ const DropEditor: React.FC<{}> = () => {
   const handleOpen = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
 
-  // useEffect(() => {
-  //   if (showModal) {
-  //     document.getElementById('modal-container')!.style.display = 'block'
-  //   } else {
-  //     document.getElementById('modal-container')!.style.display = 'none'
-  //   }
-  // }, [showModal])
-
   const readyToTransact = async (): Promise<boolean> => {
     if (!wallet) {
       await connect({

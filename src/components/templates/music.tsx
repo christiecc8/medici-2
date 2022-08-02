@@ -8,7 +8,10 @@ import { Claim, TemplateTier } from '../../model/types';
 import useWallet from '../../hooks/useWallet';
 import { CONFIG } from '../../utils/config';
 import { Box, Button } from '@mui/material';
-import { getContractCover } from '../../utils/retrieve';
+import {
+  getContractCover,
+  getContractAudioSamples,
+} from '../../utils/retrieve';
 import { getTierPricing } from '../../utils/web3';
 const localenv = CONFIG.DEV;
 
@@ -17,6 +20,13 @@ interface MusicProps {
   contractName?: string;
   isPreview: boolean;
 }
+
+type AudioSamples = {
+  playlist: Array<string>;
+  currentPlayingIndex: number;
+  nextPlayingIndex: number;
+};
+
 const abi = [
   'function tokenURI(uint256 tokenId) public view returns (string memory)',
   'function name() public view returns (string memory)',
@@ -41,6 +51,7 @@ const Music: React.FC<MusicProps> = ({ claim, contractName, isPreview }) => {
   const [name, setName] = React.useState<string>();
   const [masterAddress, setMasterAddress] = React.useState<string>();
   const [cover, setCover] = React.useState<string>();
+  const [audio, setAudio] = React.useState<AudioSamples>();
   const [minting, setMinting] = React.useState<boolean>(false);
   const [txHash, setTxHash] = React.useState<string>();
   const [price, setPrice] = React.useState<string>();
@@ -69,6 +80,18 @@ const Music: React.FC<MusicProps> = ({ claim, contractName, isPreview }) => {
     setPrice(price);
   }, [wallet]);
 
+  const getAudioSamplesPlaylist = React.useCallback(async () => {
+    if (contractName) {
+      const res = await getContractAudioSamples(contractName);
+
+      setAudio({
+        playlist: res,
+        currentPlayingIndex: 0,
+        nextPlayingIndex: 1,
+      });
+    }
+  }, [contractName]);
+
   const mint = async () => {
     if (wallet && connectedWallet) {
       setMinting(true);
@@ -82,7 +105,7 @@ const Music: React.FC<MusicProps> = ({ claim, contractName, isPreview }) => {
           gasLimit: 30000000,
         });
         const mintResponse = await tx.wait();
-        console.log(mintResponse);
+
         setTxHash(mintResponse.transactionHash);
       } catch (error: any) {
         if (error.message) {
@@ -101,11 +124,13 @@ const Music: React.FC<MusicProps> = ({ claim, contractName, isPreview }) => {
       getName();
       getContractOwner();
       getCoverImage();
+      getAudioSamplesPlaylist();
     }
   }, [
     getName,
     getContractOwner,
     getCoverImage,
+    getAudioSamplesPlaylist,
     contractName,
     cover,
     masterAddress,
@@ -136,7 +161,6 @@ const Music: React.FC<MusicProps> = ({ claim, contractName, isPreview }) => {
     <div className="w-full h-full flex flex-col md:flex-row items-center justify-between text-white relative md:overflow-hidden px-0 apply-font">
       {/* Added so that the page is rendered using the font */}
       <div className="hidden">
-        {/* @ts-expect-error */}
         <FontPicker
           activeFontFamily={(claim.fontFamily as string) || ''}
           apiKey={process.env.REACT_APP_GOOGLE_FONTS_API_KEY!}
@@ -274,11 +298,23 @@ const Music: React.FC<MusicProps> = ({ claim, contractName, isPreview }) => {
             <audio
               className="hidden"
               preload="auto"
-              loop
-              src="http://rocknation.su/upload/mp3/Eagles/1976%20-%20Hotel%20California/01.%20Hotel%20California.mp3"
+              src={audio?.playlist[audio?.currentPlayingIndex]}
               ref={(element) =>
                 (audioElementRef.current = element ?? undefined)
               }
+              onEnded={() => {
+                setAudio((val) => ({
+                  playlist: val?.playlist as Array<string>,
+                  currentPlayingIndex: val?.nextPlayingIndex as number,
+                  nextPlayingIndex:
+                    (val?.nextPlayingIndex as number) === val?.playlist.length
+                      ? 0
+                      : (val?.nextPlayingIndex as number) + 1,
+                }));
+              }}
+              onCanPlay={() => {
+                audioElementRef?.current?.play();
+              }}
             />
           </div>
         </div>
