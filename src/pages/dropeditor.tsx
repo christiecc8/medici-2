@@ -123,7 +123,7 @@ const DropEditor: React.FC<{}> = () => {
   const [contract, setContract] = useState<Contract>();
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
   const [claimCreationSuccess, setClaimCreationSuccess] = useState(false);
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(true);
 
   const [expandedAccordion, setExpandedAccordion] = React.useState<string>('');
   const [formState, setFormState] = React.useState(formInitialState);

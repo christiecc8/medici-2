@@ -235,20 +235,20 @@ const DrawerAccordions: React.FC<Props> = ({
     case TemplateTier.LOW:
       return (
         <Box>
+          {tiers}
           {details}
           {socials}
           {fonts}
-          {tiers}
           {colors}
         </Box>
       );
     case TemplateTier.MUSIC:
       return (
         <Box>
+          {tiers}
           {details}
           {socials}
           {fonts}
-          {tiers}
           {colors}
           {audio}
         </Box>
@@ -256,9 +256,9 @@ const DrawerAccordions: React.FC<Props> = ({
     default:
       return (
         <Box>
+          {tiers}
           {socials}
           {fonts}
-          {tiers}
           {colors}
         </Box>
       );
