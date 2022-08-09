@@ -151,7 +151,7 @@ const PageFive: React.FC<StepperFormProps> = ({
              href={`/launch/${data.name}`}
              className="bg-medici-purple text-white text-center  p-3 rounded-3xl w-[200px] whitespace-nowrap"
              >
-             Launch your Project
+             Launch your Project page
             </a>
              <a
              target="_blank"
@@ -159,7 +159,7 @@ const PageFive: React.FC<StepperFormProps> = ({
              href={`/project/${data.name}`}
              className="bg-medici-purple text-white text-center  p-3 rounded-3xl w-[200px] whitespace-nowrap"
              >
-             Manage your Project
+             Manage your Project details
             </a>
              <a 
              target="_blank"
