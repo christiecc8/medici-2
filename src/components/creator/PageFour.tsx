@@ -138,7 +138,7 @@ const PageFour: React.FC<StepperFormProps> = ({
         <button className="text-[#8E00FF] text-2xl" onClick={onSubmit}>Next</button>
       </div>
       { showLoader && <div className="w-4/5">
-      <h1>Hang tight!</h1>
+      <h1>Hang tight, your art is uploading! May take a few minutes for larger media and leaving will cancel upload.</h1>
       <LinearProgress
         id="progress-loader"
         variant="determinate"
