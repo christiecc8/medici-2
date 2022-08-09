@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react'
 import { StepperFormProps } from '../../model/types';
-import { getMerkleRoot, readyToTransact, generateNewContract, getNewLaunchedContract, whitelist } from '../../utils/web3'
+import { getMerkleRoot, generateNewContract, getNewLaunchedContract, whitelist } from '../../utils/web3'
 import { parseData } from '../../utils/parse'
 import useWallet from '../../hooks/useWallet'
 import { Contract } from '../../model/types';
 import { Modal, CircularProgress } from '@mui/material';
 import { utils } from 'ethers'
+import { Link } from 'react-router-dom';
 
 const PageFive: React.FC<StepperFormProps> = ({
     nextStep,
     handleInputData,
     data
 }) => {
-    const { wallet, connect, setChain, currentChain } = useWallet();
+    const { wallet, currentChain } = useWallet();
     const connectedWallet = wallet?.accounts[0]
     const [allowlistStrData, setAllowlistStrData] = useState<any>();
     const [hasAllowlist, setHasAllowlist] = useState<boolean>(false);
@@ -135,15 +136,37 @@ const PageFive: React.FC<StepperFormProps> = ({
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
           >
-          <div className="relative top-[30%] mx-auto p-5 w-96 h-[300px] shadow-lg rounded-2xl bg-[#2e2c38] text-white flex flex-col items-center justify-center">
-            {(!ContractCreationResult) && <h1 id="modal-header" className="text-center text-2xl">Generating your Smart Contract</h1>}
-            {(!ContractCreationResult) && <p id="modal-text">Our platform waits for two blocks to confirm your transaction, to ensure your transaction is secure</p>}
+          <div className="relative top-[30%] mx-auto p-5 w-96 h-[400px] shadow-lg rounded-2xl bg-[#2e2c38] text-white flex flex-col items-center justify-center">
+            {(!ContractCreationResult) && <h1 id="modal-header" className="text-center text-2xl">Deploying your Smart Contract</h1>}
+            {(!ContractCreationResult) && <p id="modal-text">Hang tight, our platform waits for two blocks before confirming your contract deployment</p>}
             <br></br>
+
             { (ContractCreationSuccess && ContractCreationResult) ? 
-            <a 
-            target="_blank"
-            rel="noreferrer"
-            href={`${currentChain!.etherscanUrl}/tx/${ContractCreationResult.txhash}`}><span className="bg-medici-purple text-white  p-3 rounded-3xl w-2/5 min-w-[100px]">Etherscan</span></a> : <CircularProgress sx={{color: '#B81CD4'}}/>}
+             <div className="flex flex-col gap-2 space-y-3 items-center">
+               <h1 id="modal-header" className="text-center text-2xl">Upload succesful!</h1>
+              <p id="modal-text">You can now manage your project or head over to the launch flow to deploy your custom mint site! </p>
+              <a
+              target="_blank"
+              rel="noreferrer"
+             href={`/launch/${data.name}`}
+             className="bg-medici-purple text-white text-center  p-3 rounded-3xl w-[200px] whitespace-nowrap"
+             >
+             Launch your Project
+            </a>
+             <a
+             target="_blank"
+             rel="noreferrer"
+             href={`/project/${data.name}`}
+             className="bg-medici-purple text-white text-center  p-3 rounded-3xl w-[200px] whitespace-nowrap"
+             >
+             Manage your Project
+            </a>
+             <a 
+             target="_blank"
+             rel="noreferrer"
+             href={`${currentChain!.etherscanUrl}/tx/${ContractCreationResult.txhash}`} className="bg-medici-purple text-white text-center  p-3 rounded-3xl w-[200px]">View on Etherscan</a>
+             </div>
+            : <CircularProgress sx={{color: '#B81CD4'}}/>}
           </div>
           </Modal>
       </div>
