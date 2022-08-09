@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { StepperFormProps } from '../../model/types';
-import { triggerUploadImageData, createZip, triggerUploadMusicData, getUploadPreview } from '../../utils/upload';
+import { triggerUploadImageData, createZip, triggerUploadMusicData } from '../../utils/upload';
 
 import Modal from '@mui/material/Modal';
 import LinearProgress from '@mui/material/LinearProgress';
@@ -75,19 +75,15 @@ const PageFour: React.FC<StepperFormProps> = ({
           const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total)
           setUploadProgress(progress);
         })
-        if (res) {
-        setTimeout(async () => {
-        const preview = await getUploadPreview(data.name);
-        setImageUploadResponse(preview);
-        const metadata = await getMetadata(preview.randomMetadataURL);
+        setImageUploadResponse(res);
+        const metadata = await getMetadata(res.randomMetadataURL);
         setMetadataFromIPFS(JSON.stringify(metadata, null, 2));
-        await handleInputData("baseURI", preview.baseURI);
-        await handleInputData("maxSupply", preview.totalSupply);
+        await handleInputData("baseURI", res.baseURI);
+        await handleInputData("maxSupply", res.totalSupply);
         setShowLoader(false);
-        handleOpen();
-        setImageUploadSuccess(true);
-      }, 5000);
-      }} catch (error: any) {
+        handleOpen()
+        setImageUploadSuccess(true)
+      } catch (error: any) {
         if (error.msg) {
           alert(error.msg)
         } else {
@@ -104,7 +100,7 @@ const PageFour: React.FC<StepperFormProps> = ({
           <br></br>
           <a href="https://docs.medicilabs.xyz/docs/Minting/overview#collection-upload" className="text-zinc-500">This is where you upload the content for your collection.</a>
           <br></br>
-          <a target="_blank" href="https://docs.medicilabs.xyz/docs/Minting/overview#collection-upload" className="text-zinc-500" rel="noreferrer"> <u> Check our docs here for more information on upload formats.</u></a>
+          <a href="https://docs.medicilabs.xyz/docs/Minting/overview#collection-upload" className="text-zinc-500"> <u> Check our docs here for more information on upload formats.</u></a>
           
       </div>
       { !imageUploadSuccess ?
