@@ -195,9 +195,14 @@ const Music: React.FC<MusicProps> = ({ claim, contractName, chainid, isPreview }
   };
 
   const mint = async () => {
-    if (wallet && connectedWallet) {
+    if (
+      wallet &&
+      connectedWallet &&
+      projectChain
+    ) {
       setMinting(true);
       try {
+        await setChain({ chainId: projectChain.hexId });
         // const walletProvider = new ethers.providers.Web3Provider(
         //   wallet.provider
         // );
