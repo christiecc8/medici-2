@@ -97,7 +97,32 @@ export const getContractCover = async (contract: string) => {
     .get(API_PATHS.CLAIM_COVER, { params: request_data, responseType: 'blob' })
     .then(function (res) {
       if (res.status === 200) {
-        return res.data;
+        return res.data.cover_cdn_url;
+      } else {
+        throw new Error(res.statusText);
+      }
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+
+  if (res) {
+    return Promise.resolve(URL.createObjectURL(res));
+  } else {
+    return Promise.reject('error');
+  }
+};
+
+export const getContractCoverThumbnail = async (contract: string) => {
+  // console.log("Getting contract cover for " + contract);
+  const request_data = {
+    collection: contract,
+  };
+  const res = await apiClient
+    .get(API_PATHS.CLAIM_COVER, { params: request_data, responseType: 'blob' })
+    .then(function (res) {
+      if (res.status === 200) {
+        return res.data.cover_cdn_thumbnail_url;
       } else {
         throw new Error(res.statusText);
       }

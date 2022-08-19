@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from 'react'
 import { Contract } from '../../model/types'
 import { Link } from 'react-router-dom'
-import { getContractCover } from '../../utils/retrieve'
+import { getContractCoverThumbnail } from '../../utils/retrieve'
 
 const ContractCardV2: React.FC<{ contract: Contract}> = ({contract}) => {
     const [CoverImage, setCoverImage] = useState<string>();
 
     useEffect(() => {
-        async function getCover() {
-            try {
-                const data = await getContractCover(contract.name)
-                setCoverImage(data);
-            } catch {
-                console.log("error getting cover")
-                return null;
-            }
-        }
-        getCover();
+      async function getCover() {
+          try {
+              const data = await getContractCoverThumbnail(contract.name)
+              setCoverImage(data);
+          } catch {
+              console.log("error getting cover")
+              return null;
+          }
+      }
+      getCover();
     }, [])
 
     if (!CoverImage) {
