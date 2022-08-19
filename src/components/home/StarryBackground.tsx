@@ -7,7 +7,7 @@ import { useLocation } from 'react-router-dom';
 
 const StarryBackground: React.FC<{}> = () => {
   const location = useLocation();
-  if (location.pathname !== '/') {
+  if (location.pathname !== '/home') {
     return null;
   }
 

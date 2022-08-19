@@ -5,6 +5,9 @@ module.exports = {
   theme: {
     fontFamily: {
       sans: ['Poppins'],
+      drukwide: ['DrukWideMedium'],
+      authentic: ['AuthenticSans'],
+      nbarchitekt: ["NBArchitekt"],
     },
     extend: {
       colors: {
