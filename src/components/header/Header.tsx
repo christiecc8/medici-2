@@ -37,7 +37,7 @@ const Header: React.FC<{}> = () => {
   }, [connect])
 
   const location = useLocation()
-  if (location.pathname.startsWith('/page/')) {
+  if (location.pathname.startsWith('/page/') || location.pathname === "/") {
     return null
   }
 
