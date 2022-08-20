@@ -87,30 +87,34 @@ export const getResourceType = async (contract: string) => {
       });
     });
 };
-
 export const getContractCover = async (contract: string) => {
   // console.log("Getting contract cover for " + contract);
   const request_data = {
     collection: contract,
   };
-  const res = await apiClient
-    .get(API_PATHS.CLAIM_COVER, { params: request_data, responseType: 'blob' })
+  return apiClient
+  .get(API_PATHS.CLAIM_COVER, { params: request_data })
+  .then(function (res) {
+    return Promise.resolve(res.data.cover_cdn_url);
+  })
+  .catch(function (error) {
+    return Promise.reject("Error getting cover thumbnail")
+  });
+};
+
+export const getContractCoverThumbnail = async (contract: string) => {
+  // console.log("Getting contract cover for " + contract);
+  const request_data = {
+    collection: contract,
+  };
+  return apiClient
+    .get(API_PATHS.CLAIM_COVER, { params: request_data })
     .then(function (res) {
-      if (res.status === 200) {
-        return res.data;
-      } else {
-        throw new Error(res.statusText);
-      }
+      return Promise.resolve(res.data.cover_cdn_thumbnail_url);
     })
     .catch(function (error) {
-      console.log(error);
+      return Promise.reject("Error getting cover thumbnail")
     });
-
-  if (res) {
-    return Promise.resolve(URL.createObjectURL(res));
-  } else {
-    return Promise.reject('error');
-  }
 };
 
 export const getContractAudioSamples = async (contract: string) => {
