@@ -93,24 +93,18 @@ export const getContractCover = async (contract: string) => {
   const request_data = {
     collection: contract,
   };
-  const res = await apiClient
-    .get(API_PATHS.CLAIM_COVER, { params: request_data, responseType: 'blob' })
-    .then(function (res) {
-      if (res.status === 200) {
-        return res.data.cover_cdn_url;
-      } else {
-        throw new Error(res.statusText);
-      }
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-
-  if (res) {
-    return Promise.resolve(URL.createObjectURL(res));
-  } else {
-    return Promise.reject('error');
-  }
+  return apiClient
+  .get(API_PATHS.CLAIM_COVER, { params: request_data })
+  .then(function (res) {
+    if (res.status === 200) {
+      return Promise.resolve(res.data.cover_cdn_url);
+    } else {
+      throw new Error(res.statusText);
+    }
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
 };
 
 export const getContractCoverThumbnail = async (contract: string) => {
@@ -118,11 +112,11 @@ export const getContractCoverThumbnail = async (contract: string) => {
   const request_data = {
     collection: contract,
   };
-  const res = await apiClient
-    .get(API_PATHS.CLAIM_COVER, { params: request_data, responseType: 'blob' })
+  return apiClient
+    .get(API_PATHS.CLAIM_COVER, { params: request_data })
     .then(function (res) {
       if (res.status === 200) {
-        return res.data.cover_cdn_thumbnail_url;
+        return Promise.resolve(res.data.cover_cdn_thumbnail_url);
       } else {
         throw new Error(res.statusText);
       }
@@ -130,12 +124,6 @@ export const getContractCoverThumbnail = async (contract: string) => {
     .catch(function (error) {
       console.log(error);
     });
-
-  if (res) {
-    return Promise.resolve(URL.createObjectURL(res));
-  } else {
-    return Promise.reject('error');
-  }
 };
 
 export const getContractAudioSamples = async (contract: string) => {
