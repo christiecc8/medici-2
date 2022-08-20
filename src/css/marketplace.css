@@ -16,8 +16,7 @@ body,
 .body-bg {
   background: url('../../public/marketplace-bg.svg');
   background-color: #F2F2F2;
-  background-size: cover;
-  background-repeat: no-repeat;
+  background-size: auto;
 }
 
 .header-title {

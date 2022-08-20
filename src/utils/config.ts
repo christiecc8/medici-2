@@ -25,7 +25,10 @@ export enum API_PATHS {
   RETRIEVE_PREVIEW = '/retrieve/preview',
   RETRIEVE_CHAIN_CONFIG = '/retrieve/chainConfig',
   RETRIEVE_CONTRACT_STATUS = '/retrieve/contractStatus',
-  RETRIEVE_PROJECT_RESOURCE_TYPE = '/retrieve/resourceType'
+  RETRIEVE_PROJECT_RESOURCE_TYPE = '/retrieve/resourceType',
+  RETRIEVE_CURATED_COLLECTIONS = '/retrieve/curatedCollectionsClaims',
+  RETRIEVE_ART_COLLECTIONS_BASIC = 'retrieve/imageCollectionsBasicInfo',
+  RETRIEVE_MUSIC_COLLECTIONS_BASIC = 'retrieve/musicCollectionsBasicInfo'
 }
 
 export const CONFIG = {
