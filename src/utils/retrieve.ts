@@ -218,3 +218,14 @@ export const getAllImageCollections = async() => {
     return Promise.reject(error.message)
   })
 }
+
+export const getAllMusicCollections = async() => {
+  return apiClient
+  .get(API_PATHS.RETRIEVE_MUSIC_COLLECTIONS_BASIC)
+  .then(function(response) {
+    return Promise.resolve(response.data)
+  })
+  .catch(function(error) {
+    return Promise.reject(error.message)
+  })
+}
