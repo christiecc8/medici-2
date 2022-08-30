@@ -47,7 +47,7 @@ const App: React.FC<{}> = () => {
         <div className="text-medici-primary relative overflow-auto min-h-full">
           <Router>
             <main className="font-sans mt-16">
-              <Background />
+              {/* <Background /> */}
               <StarryBackground />
               <Header />
               <div className="z-1 relative">
