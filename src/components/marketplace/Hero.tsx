@@ -81,7 +81,7 @@ const Hero: React.FC<{}> = () => {
             <h2 className="text-[#1E1E1E]">Price</h2>
             <h2 className="text-[#1E1E1E] text-4xl font-nbarchitekt">{price}</h2>
           </div>
-        <button className="bg-[#1E1E1E] font-authentic text-white px-4 py-2 rounded-md w-full">View NFT</button>
+        <a className="bg-[#1E1E1E] font-authentic text-white px-4 py-2 rounded-md w-full text-center" href={`/page/${heroCollection.name}`} target="_blank" rel="noopener noreferrer">View NFT</a>
       </div>
     </div>
     }

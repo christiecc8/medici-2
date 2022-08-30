@@ -140,6 +140,7 @@ const ProjectPage: React.FC<{ contractName: string }> = ({contractName}) => {
       method: 'GET',
       headers,
     }).then((res) => {
+      console.log(res)
       if (res.status === 200) {
         return res.json()
       } else {
