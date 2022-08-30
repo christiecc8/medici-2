@@ -103,7 +103,6 @@ export const getContractCover = async (contract: string) => {
 };
 
 export const getClaim = async (contract: string) => {
-  // console.log("Getting contract cover for " + contract);
   const request_data = {
     collection: contract,
   };
