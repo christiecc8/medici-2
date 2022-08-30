@@ -16,7 +16,15 @@ body,
 .body-bg {
   background: url('../../public/marketplace-bg.svg');
   background-color: #F2F2F2;
-  background-size: auto;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.hero-image {
+width: 350px;
+border: 2px solid #000000;
+filter: drop-shadow(10px 10px 0px #000000);
+border-radius: 20px;
 }
 
 .header-title {
