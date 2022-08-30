@@ -102,6 +102,21 @@ export const getContractCover = async (contract: string) => {
   });
 };
 
+export const getClaim = async (contract: string) => {
+  // console.log("Getting contract cover for " + contract);
+  const request_data = {
+    collection: contract,
+  };
+  return apiClient
+    .get(API_PATHS.CLAIM_FETCH, { params: request_data })
+    .then(function (res) {
+      return Promise.resolve(res.data);
+    })
+    .catch(function (error) {
+      return Promise.reject("Error fetching claim")
+    });
+};
+
 export const getContractCoverThumbnail = async (contract: string) => {
   // console.log("Getting contract cover for " + contract);
   const request_data = {
