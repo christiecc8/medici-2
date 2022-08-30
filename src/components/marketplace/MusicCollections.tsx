@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { getAllImageCollections } from '../../utils/retrieve';
+import { getAllMusicCollections } from '../../utils/retrieve';
 import '../../css/marketplace.css';
 import CollectionCard from './CollectionCard';
 
@@ -18,7 +18,7 @@ const MusicCollections: React.FC<{}> = () => {
   useEffect(() => {
     ( async () => {
       if (!musicCollections) {
-      const res = await getAllImageCollections();
+      const res = await getAllMusicCollections();
       setMusicCollections(res)
       }
     })();

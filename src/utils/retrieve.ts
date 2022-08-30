@@ -229,3 +229,19 @@ export const getAllMusicCollections = async() => {
     return Promise.reject(error.message)
   })
 }
+
+export const getCuratedCollection = async() => {
+  const request_data = {
+    maxNumber: 3
+  }
+
+
+  return apiClient
+  .get(API_PATHS.RETRIEVE_CURATED_COLLECTIONS, { params: request_data })
+  .then(function(response) {
+    return Promise.resolve(response.data)
+  })
+  .catch(function(error) {
+    return Promise.reject(error.message)
+  })
+}
