@@ -6,6 +6,7 @@ import LowTier from '../components/templates/lowtier';
 import { Chain, Claim, TemplateTier } from '../model/types';
 import { API_ENDPOINT, API_PATHS } from '../utils/config';
 import Music from '../components/templates/music';
+import { getClaim } from '../utils/retrieve';
 
 export const ClaimPageRenderer: React.FC<{
   claim: Claim;
@@ -44,34 +45,14 @@ export const ClaimPageRenderer: React.FC<{
 
 const ClaimPage: React.FC<{}> = () => {
   const [claim, setClaim] = React.useState<Claim>();
-  console.log(claim)
 
   const { name: contractName } = useParams();
 
   React.useEffect(() => {
     (async () => {
-      const params = new URLSearchParams({
-        collection: contractName!,
-      });
-      const headers = new Headers();
-      headers.set('Content-Type', 'application/json');
-      const res = await fetch(
-        `${API_ENDPOINT}${API_PATHS.CLAIM_FETCH}?` + params,
-        {
-          method: 'GET',
-          headers,
-        }
-      )
-        .then((res) => {
-          if (res.status === 200) {
-            return res.json();
-          } else {
-            throw new Error(res.statusText);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      if (contractName) {
+      const res = await getClaim(contractName)
+      console.log(res)
       if (res) {
         const {
           artist,
@@ -87,7 +68,7 @@ const ClaimPage: React.FC<{}> = () => {
           tier,
           chainid,
           template,
-        } = res[0];
+        } = res;
         setClaim({
           artist,
           bgColor: backgroundcolor,
@@ -104,7 +85,7 @@ const ClaimPage: React.FC<{}> = () => {
           template,
         });
       }
-    })();
+    }})();
   }, [contractName]);
   if (!claim) {
     return null;
