@@ -27,6 +27,12 @@ filter: drop-shadow(10px 10px 0px #000000);
 border-radius: 20px;
 }
 
+.thumbnail-card {
+border: 2px solid #000000;
+filter: drop-shadow(5px 5px 0px #000000);
+border-radius: 3px;
+}
+
 .header-title {
   color: #1E1E1E;
 }
