@@ -11,7 +11,7 @@ const Header: React.FC<{}> = () => {
 
 
   return (
-    <header className="h-16 w-full px-2 lg:px-0 py-4 fixed top-0 left-0 z-10">
+    <header className="h-16 w-full px-2 lg:px-0 py-4 top-0 left-0 z-10 -mt-10">
       <div className="w-full md:w-4/5 mx-auto flex items-center justify-between h-full">
           <Link to="/" className="flex align-center">
             <img src="/logo-medici-dark.svg" alt="" className="mr-4" />
