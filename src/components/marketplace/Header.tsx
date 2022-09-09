@@ -22,9 +22,9 @@ const Header: React.FC<{}> = () => {
           <Link to="/about" className="hidden md:block">
             About
           </Link> */}
-      <button className="rounded-3xl bg-[#1E1E1E] text-white w-24 flex items-center justify-center h-10 font-authentic self-start order-1">
-        Create
-      </button>
+        <a href="/home" className="rounded-3xl bg-[#1E1E1E] text-white w-24 flex items-center justify-center h-10 font-authentic self-start order-1">
+          Create
+        </a>
     </header>
   );
 };
