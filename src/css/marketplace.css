@@ -15,24 +15,24 @@ body,
 
 .body-bg {
   background: url('../../public/marketplace-bg.svg');
-  background-color: #F2F2F2;
+  background-color: #f2f2f2;
   background-size: cover;
   background-repeat: no-repeat;
 }
 
 .hero-image {
-width: 350px;
-border: 2px solid #000000;
-filter: drop-shadow(10px 10px 0px #000000);
-border-radius: 20px;
+  /* width: 350px; */
+  border: 2px solid #000000;
+  filter: drop-shadow(10px 10px 0px #000000);
+  border-radius: 20px;
 }
 
 .thumbnail-card {
-border: 2px solid #000000;
-filter: drop-shadow(5px 5px 0px #000000);
-border-radius: 3px;
+  border: 2px solid #000000;
+  filter: drop-shadow(5px 5px 0px #000000);
+  border-radius: 5px;
 }
 
 .header-title {
-  color: #1E1E1E;
+  color: #1e1e1e;
 }
