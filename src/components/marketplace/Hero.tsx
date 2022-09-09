@@ -49,24 +49,24 @@ const Hero: React.FC<{ hero: any }> = ({ hero }) => {
     <div className="z-10 mt-20 mb-10 w-full items-center relative">
       <img
         src={stars}
-        className="w-20 bg-transparent absolute left-20 top-0"
+        className="w-20 bg-transparent absolute -left-2 md:left-20 -top-4"
         alt=""
       />
       <img
         src={stars2}
-        className="w-20 bg-transparent absolute right-20 bottom-0"
+        className="w-20 bg-transparent absolute -right-2 md:right-20 -bottom-10"
         alt=""
       />
       {hero && (
         <div className="flex flex-col md:flex-row gap-24 justify-center items-center p-10">
-          <div className="hero-image w-1/3">
+          <div className="hero-image w-full md:w-1/3">
             <img
               src={hero.cover_cdn_url}
               className="w-full aspect-square rounded-2xl object-cover"
               alt={hero.name}
             />
           </div>
-          <div className="flex flex-col space-y-5 w-1/3">
+          <div className="flex flex-col space-y-5 w-full md:w-1/3">
             <h1 className="font-drukwide header-title text-3xl">{hero.name}</h1>
             <div className="flex flex-row">
               <div className="py-0 pr-5 border-r-[1.5px] border-[#87878786] border-spacing-3 text-[#1E1E1E]">

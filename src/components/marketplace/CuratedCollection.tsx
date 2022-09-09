@@ -71,16 +71,16 @@ const CuratedCollection: React.FC<{ collection: any }> = ({ collection }) => {
   ]);
 
   return (
-    <div className="w-full border-black border-y-2 backdrop-blur-lg h-[375px] flex flex-col p-3">
+    <div className="w-full border-black border-y-2 backdrop-blur-lg md:h-[375px] flex flex-col p-3">
       <div className="items-start">
         <h1 className="font-nbarchitekt text-[#1E1E1E]">
           {numMinted}/{maxSupply}
         </h1>
       </div>
-      <div className="w-full flex">
-        <div className="w-1/2 flex flex-col-reverse h-full">
+      <div className="w-full flex flex-col md:flex-row">
+        <div className="w-full md:w-1/2 flex flex-col-reverse h-full mb-4 md:mb-0">
           {collection && (
-            <h1 className="font-drukwide text-6xl text-[#1E1E1E]">
+            <h1 className="font-drukwide text-3xl md:text-6xl text-[#1E1E1E]">
               {collection.name}
             </h1>
           )}
@@ -93,7 +93,7 @@ const CuratedCollection: React.FC<{ collection: any }> = ({ collection }) => {
             </span>
           </div>
         </div>
-        <div className="w-1/2 grid grid-cols-3 flex-2 gap-2">
+        <div className="w-full md:w-1/2 grid md:grid-cols-3 flex-2 gap-2">
           {thumbnails &&
             Object.keys(thumbnails).map((thumbnail: any, i) => (
               <ThumbnailCard

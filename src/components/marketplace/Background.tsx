@@ -6,7 +6,7 @@ import '../../css/marketplace.css';
 
 const Background: React.FC<{}> = () => {
   return (
-    <div className="absolute top-0 left-0 z-0 h-full w-full flex flex-col -mt-16">
+    <div className="absolute top-0 left-0 z-0 h-[calc(100%+64px)] w-full flex flex-col -mt-16">
       {/* <img
         src={stars}
         className="w-20 bg-transparent absolute left-20 top-24"

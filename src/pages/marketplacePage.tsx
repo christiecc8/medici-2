@@ -7,9 +7,15 @@ import ImageCollections from '../components/marketplace/ImageCollections';
 import MusicCollections from '../components/marketplace/MusicCollections';
 import { getCuratedCollection } from '../utils/retrieve';
 
+enum Tabs {
+  Art = 'art',
+  Music = 'music',
+}
+
 const Marketplace: React.FC<{}> = () => {
   const [heroCollection, setHeroCollection] = useState<any>();
   const [curatedCollections, setCuratedCollections] = useState<any>();
+  const [currentTab, setCurrentTab] = useState(Tabs.Art);
 
   useEffect(() => {
     (async () => {
@@ -33,8 +39,36 @@ const Marketplace: React.FC<{}> = () => {
         curatedCollections.map((collection: any) => (
           <CuratedCollection collection={collection} />
         ))}
-      <ImageCollections />
-      <MusicCollections />
+
+      <div className="w-full z-10 mt-10">
+        <div>
+          <ul className="font-drunkwide text-black header-title flex gap-8 border-b-2 border-black px-2">
+            <li
+              className={`${
+                currentTab === Tabs.Art ? 'border-b-4' : ''
+              } border-black relative top-[3px] cursor-pointer`}
+              onClick={() => setCurrentTab(Tabs.Art)}
+            >
+              <h3 className="text-3xl font-bold">Art</h3>
+            </li>
+            <li
+              className={`${
+                currentTab === Tabs.Music ? 'border-b-4' : ''
+              } border-black relative top-[3px] cursor-pointer`}
+              onClick={() => setCurrentTab(Tabs.Music)}
+            >
+              <h3 className="text-3xl font-bold">Music</h3>
+            </li>
+          </ul>
+        </div>
+        <div>
+          {currentTab === Tabs.Art ? (
+            <ImageCollections />
+          ) : (
+            <MusicCollections />
+          )}
+        </div>
+      </div>
     </div>
   );
 };

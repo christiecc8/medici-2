@@ -9,11 +9,11 @@ const Header: React.FC<{}> = () => {
   }
 
   return (
-    <header className="h-16 w-full px-4 z-10 -mt-10 flex items-end justify-between">
-      <Link to="/" className="flex align-center self-start">
+    <header className="h-16 w-full px-4 z-10 -mt-10 flex flex-wrap items-end justify-between">
+      <Link to="/" className="flex align-center self-start order-0">
         <img src="/logo-medici-dark.svg" alt="" className="mr-4" />
       </Link>
-      <h1 className="font-drukwide header-title text-3xl md:text-5xl leading-none">
+      <h1 className="font-drukwide header-title w-full md:w-auto mt-4 md:mt-0 text-3xl md:text-5xl text-center leading-none order-2 md:order-1">
         GALLERY
       </h1>
       {/* <Link to="/explore" className="hidden md:block">
@@ -22,9 +22,9 @@ const Header: React.FC<{}> = () => {
           <Link to="/about" className="hidden md:block">
             About
           </Link> */}
-      <span className="rounded-3xl bg-[#1E1E1E] text-white w-24 flex items-center justify-center h-10 font-authentic self-start">
+      <button className="rounded-3xl bg-[#1E1E1E] text-white w-24 flex items-center justify-center h-10 font-authentic self-start order-1">
         Create
-      </span>
+      </button>
     </header>
   );
 };

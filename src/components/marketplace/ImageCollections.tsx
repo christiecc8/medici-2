@@ -25,7 +25,7 @@ const ImageCollections: React.FC<{}> = () => {
   }, [imageCollections, setImageCollections]);
 
   return (
-    <div className="grid grid-cols-3 z-20">
+    <div className="grid md:grid-cols-3 z-20">
       {imageCollections &&
         imageCollections.map((col: ImageCollection, i) => (
           <CollectionCard
