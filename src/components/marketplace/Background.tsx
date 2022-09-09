@@ -12,7 +12,7 @@ const Background: React.FC<{}> = () => {
         className="w-20 bg-transparent absolute left-20 top-24"
         alt=""
       /> */}
-      <div className="body-bg flex-100 w-full flex-1"></div>
+      <div className="body-marketplace-bg flex-100 w-full flex-1"></div>
       {/* <img
         src={stars2}
         className="w-20 bg-transparent absolute right-20 top-96"
