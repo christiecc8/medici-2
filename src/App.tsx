@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material';
 
 import Home from './pages/home';
+import Marketplace from './pages/marketplacePage';
 import DropEditor from './pages/dropeditor';
 import Project from './pages/project';
 import ProjectManager from './pages/project_manager';
@@ -56,8 +57,9 @@ const App: React.FC<{}> = () => {
                   <Route path="/page/:name" element={<ClaimPage />} />
                   <Route path="/projects" element={<ProjectManager />} />
                   <Route path="/project/:contractname" element={<Project />} />
+                  <Route path="/home" element={<Home/>} />
                   <Route path="/reservation/:name" element={<Reservation />} />
-                  <Route path="/" element={<Home />} />
+                  <Route path="/" element={<Marketplace />} />
                   <Route path="*" element={<EmptyPage />} />
                 </Routes>
               </div>

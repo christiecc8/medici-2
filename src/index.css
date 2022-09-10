@@ -59,3 +59,18 @@ body,
   height: 48px;
   background-color: white;
 }
+
+@font-face {
+  font-family: "DrukWideMedium";
+  src: url("../public/fonts/DrukWideMedium.otf");
+}
+
+@font-face {
+  font-family: "NBArchitekt";
+  src: url("../public/fonts/NBArchitektNeueRegular.otf");
+}
+
+@font-face {
+  font-family: "AuthenticSans";
+  src: url("../public/fonts/AUTHENTICSans-90.otf");
+}
