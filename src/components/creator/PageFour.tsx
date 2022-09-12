@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { StepperFormProps } from '../../model/types';
-import { triggerUploadImageData, createZip, triggerUploadMusicData, getUploadPreview } from '../../utils/upload';
+import { triggerUploadImageData, createZip, triggerUploadMusicData, createProject } from '../../utils/upload';
+import useWallet from '../../hooks/useWallet';
 
 import Modal from '@mui/material/Modal';
 import LinearProgress from '@mui/material/LinearProgress';
-import { getMetadata } from '../../utils/retrieve';
 
 const PageFour: React.FC<StepperFormProps> = ({
     nextStep,
@@ -19,6 +19,7 @@ const PageFour: React.FC<StepperFormProps> = ({
     const [imageUploadResponse, setImageUploadResponse] = useState<any>();
     const [imageUploadSuccess, setImageUploadSuccess] = useState<boolean>(false)
     const [metadataFromIPFS, setMetadataFromIPFS] = useState<any>();
+    const { wallet, connect } = useWallet()
 
     const onSubmit = () => {
       // handleOpen();
@@ -39,6 +40,12 @@ const PageFour: React.FC<StepperFormProps> = ({
     },[showModal])
 
     const uploadImageData = async (files: FileList) => {
+      await connect({
+        autoSelect: { 
+          label: 'Wallet Connect',
+          disableModals: false
+        }
+      })
       if (files === null || files === undefined) {
         setShowLoader(false);
         return;
@@ -75,18 +82,21 @@ const PageFour: React.FC<StepperFormProps> = ({
           const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total)
           setUploadProgress(progress);
         })
-        if (res) {
-        setTimeout(async () => {
-        const preview = await getUploadPreview(data.name);
-        setImageUploadResponse(preview);
-        const metadata = await getMetadata(preview.randomMetadataURL);
-        setMetadataFromIPFS(JSON.stringify(metadata, null, 2));
-        await handleInputData("baseURI", preview.baseURI);
-        await handleInputData("maxSupply", preview.totalSupply);
-        setShowLoader(false);
+        if (res && wallet) {
+      //   setTimeout(async () => {
+      //   const preview = await getUploadPreview(data.name);
+      //   setImageUploadResponse(preview);
+      //   const metadata = await getMetadata(preview.randomMetadataURL);
+      //   setMetadataFromIPFS(JSON.stringify(metadata, null, 2));
+      //   await handleInputData("baseURI", preview.baseURI);
+      //   await handleInputData("maxSupply", preview.totalSupply);
+      //   setShowLoader(false);
+      //   handleOpen();
+      //   setImageUploadSuccess(true);
+      // }, 5000);
+        await createProject(data.name, wallet.accounts[0].address)
         handleOpen();
         setImageUploadSuccess(true);
-      }, 5000);
       }} catch (error: any) {
         if (error.msg) {
           alert(error.msg)
@@ -161,13 +171,14 @@ const PageFour: React.FC<StepperFormProps> = ({
         aria-describedby="modal-modal-description"
       >
       <div className="relative top-[20%] mx-auto p-5 w-96 h-[550px] shadow-lg rounded-2xl bg-[#2e2c38] text-white flex flex-col items-center justify-center outline-none">
-      <h1 className="text-center text-4xl mb-5">Upload Preview</h1>
+      {/* <h1 className="text-center text-4xl mb-5">Upload Preview</h1>
       {imageUploadResponse && <img src={imageUploadResponse.randomFileURL}/>}
       {(imageUploadResponse && metadataFromIPFS) &&
       <div className="flex flex-col w-[300px] overflow-scroll border-[1px] border-white p-2 mt-3">
       <p>{JSON.stringify(metadataFromIPFS)}</p>
       </div>}
-      {imageUploadResponse && <p>Total supply: {imageUploadResponse.totalSupply}</p>}
+      {imageUploadResponse && <p>Total supply: {imageUploadResponse.totalSupply}</p>} */}
+      <h1>Upload success!</h1>
       </div>
       </Modal>
       </div>

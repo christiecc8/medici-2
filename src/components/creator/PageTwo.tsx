@@ -18,6 +18,7 @@ const PageTwo: React.FC<StepperFormProps> = ({
 
   const [CoverImage, setCoverImage] = useState<File>();
   const [ImageUrl, setImageUrl] = useState<string>();
+  const [CoverUploadSuccess, setCoverUploadSuccess] = useState<boolean>(false);
 
   useEffect(() => {
     if (CoverImage) {
@@ -27,11 +28,17 @@ const PageTwo: React.FC<StepperFormProps> = ({
 
   const onSubmit = async () => {
     if (CoverImage && !(validator.isEmpty(data.name)) && !(validator.isEmpty(data.symbol)) ) {
-      const res = await uploadCoverImage(data.name, CoverImage);
-      nextStep();
+      try {
+        await uploadCoverImage(data.name, data.symbol, CoverImage);
+        setCoverUploadSuccess(true)
+      } catch {
+        alert("Error uploading cover image! Please try again")
+        setCoverUploadSuccess(false)
+      }
     } else {
       alert("A name, cover image, and symbol are required!")
     }
+    if (CoverUploadSuccess) nextStep()
   };
 
   const nameCheck = async (name: string) => {

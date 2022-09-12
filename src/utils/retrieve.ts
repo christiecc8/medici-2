@@ -235,10 +235,25 @@ export const getCuratedCollection = async() => {
     maxNumber: 3
   }
 
-
   return apiClient
   .get(API_PATHS.RETRIEVE_CURATED_COLLECTIONS, { params: request_data })
   .then(function(response) {
+    return Promise.resolve(response.data)
+  })
+  .catch(function(error) {
+    return Promise.reject(error.message)
+  })
+}
+
+export const getAllProjectsByAddress = async(walletAddress: string) => {
+  const request_data = {
+    "walletAddress": walletAddress
+  }
+
+  return apiClient
+  .get(API_PATHS.GET_ALL_CREATED_PROJECTS_BY_ADDRESS, { params: request_data })
+  .then(function(response) {
+    console.log(response)
     return Promise.resolve(response.data)
   })
   .catch(function(error) {

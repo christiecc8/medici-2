@@ -51,6 +51,26 @@ export const triggerUploadMusicData= async (
   })
 }
 
+export const createProject = async (name: string, walletAddress: string) => {
+  const request_data = {
+    "collection": name,
+    "masterAddress": walletAddress
+  }
+  console.log("Creating project " + name + " for address " + walletAddress)
+
+  return apiClient.post(
+    API_PATHS.CREATE_PROJECT,
+    request_data,
+    {
+      "headers": {"Content-Type": "application/json"},
+    })
+    .then(function(response) {
+      return Promise.resolve(true);
+    }).catch(function(error){
+      return Promise.resolve(false);
+    });
+}
+
 /* -------------------------------------------------------------------------- */
 /*                               Metadata Upload                              */
 /* -------------------------------------------------------------------------- */
@@ -79,20 +99,22 @@ onMetadataProgress: any) => {
 /*                                Upload Cover                                */
 /* -------------------------------------------------------------------------- */
 
-export const uploadCoverImage = async (name: string, file: File) => {
+export const uploadCoverImage = async (name: string, symbol: string, file: File) => {
   const formdata = new FormData();
   formdata.append("cover", file)
-  
+
   return apiClient.post(
     localenv.api.paths.uploadImageCover,
     formdata,
     {
       "headers": {"Content-Type": "form-data"},
-      "params": {"collection": name},
+      "params": {"collection": name, "symbol": symbol},
     })
     .then(function(response) {
+      console.log(response)
       return Promise.resolve(true);
     }).catch(function(error){
+      console.log(error)
       return Promise.resolve(false);
     });
 }
