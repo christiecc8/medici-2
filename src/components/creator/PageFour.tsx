@@ -41,12 +41,13 @@ const PageFour: React.FC<StepperFormProps> = ({
     },[showModal])
 
     const uploadImageData = async (files: FileList) => {
+      if (!wallet) {
       await connect({
         autoSelect: { 
           label: 'Wallet Connect',
           disableModals: false
         }
-      })
+      }) }
       if (files === null || files === undefined) {
         setShowLoader(false);
         return;
