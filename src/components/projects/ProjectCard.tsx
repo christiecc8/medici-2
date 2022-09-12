@@ -10,7 +10,7 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
         <img src={project.cover_cdn_thumbnail_url} alt={project.name} className="w-full aspect-video rounded-2xl object-cover"/>
       </div>
       <h1 className="font-nbarchitekt mt-2">{project.name}</h1>
-     </div>
+    </div>
   )
   : (
   <Link

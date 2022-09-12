@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { StepperFormProps } from '../../model/types';
 import { triggerUploadImageData, createZip, triggerUploadMusicData, createProject } from '../../utils/upload';
 import useWallet from '../../hooks/useWallet';
+import { Link } from 'react-router-dom';
 
 import Modal from '@mui/material/Modal';
 import LinearProgress from '@mui/material/LinearProgress';
@@ -21,14 +22,14 @@ const PageFour: React.FC<StepperFormProps> = ({
     const [metadataFromIPFS, setMetadataFromIPFS] = useState<any>();
     const { wallet, connect } = useWallet()
 
-    const onSubmit = () => {
-      // handleOpen();
-      if (!imageUploadSuccess) {
-        alert("Please upload your project!")
-      } else {
-        nextStep();
-      }
-    }
+    // const onSubmit = () => {
+    //   // handleOpen();
+    //   if (!imageUploadSuccess) {
+    //     alert("Please upload your project!")
+    //   } else {
+    //     nextStep();
+    //   }
+    // }
 
     useEffect(() => {
       if (showModal) {
@@ -148,9 +149,9 @@ const PageFour: React.FC<StepperFormProps> = ({
         </div>
       </div>
       }
-      <div className="flex justify-end w-full absolute bottom-24 right-10">
+      {/* <div className="flex justify-end w-full absolute bottom-24 right-10">
         <button className="text-[#8E00FF] text-2xl" onClick={onSubmit}>Next</button>
-      </div>
+      </div> */}
       { showLoader && <div className="w-4/5">
       <h1>Hang tight, your art is uploading! May take a few minutes for larger media and leaving will cancel upload.</h1>
       <LinearProgress
@@ -178,7 +179,11 @@ const PageFour: React.FC<StepperFormProps> = ({
       <p>{JSON.stringify(metadataFromIPFS)}</p>
       </div>}
       {imageUploadResponse && <p>Total supply: {imageUploadResponse.totalSupply}</p>} */}
-      <h1>Upload success!</h1>
+        <h1>Upload success!</h1>
+        <Link 
+          to={`/projects`}
+          className="bg-medici-purple text-white text-center  p-3 rounded-3xl w-[200px] whitespace-nowrap"
+        >Projects</Link>
       </div>
       </Modal>
       </div>
