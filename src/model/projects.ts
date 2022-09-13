@@ -5,9 +5,9 @@ export enum ProjectStatus {
 }
 
 export type Project = {
-  name: string,
-  symbol: string,
-  cover_cdn_url: string,
-  cover_cdn_thumbnail_url: string,
+  name?: string,
+  symbol?: string,
+  cover_cdn_url?: string,
+  cover_cdn_thumbnail_url?: string,
   status: ProjectStatus,
 }

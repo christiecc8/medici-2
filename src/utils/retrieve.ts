@@ -87,6 +87,7 @@ export const getResourceType = async (contract: string) => {
       });
     });
 };
+
 export const getContractCover = async (contract: string) => {
   // console.log("Getting contract cover for " + contract);
   const request_data = {
