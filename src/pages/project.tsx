@@ -9,7 +9,6 @@ export const ProjectPageRenderer: React.FC<{
   contractName: string
   project: Project
 }> = ({ contractName, project }) => {
-  console.log("Inside project page renderer for " + project.name)
   switch (project.status) {
     case ProjectStatus.LAUNCHED:
       return <LaunchedProject contractName={contractName} project={project}/>
@@ -25,8 +24,6 @@ const ProjectPage: React.FC<{}> = () => {
   const contractname = params.contractname as string;
 
   const [project, setProject] = useState<Project>();
-  console.log("Trying to render project " + contractname)
-
   useEffect(() => {
     (async () => {
       if (contractname) {

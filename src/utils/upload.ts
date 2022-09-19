@@ -129,13 +129,13 @@ export const getUploadPreview = async (name: string) => {
     "params": {"collection": name},
     },
     ).then((response) => {
-    console.log(response);
     const res = {
       baseURI: response.data.baseURI,
       totalSupply: response.data.totalSupply,
       randomFileURL: response.data.randomFileURL,
       randomMetadataURL: response.data.randomMetadataURL,
-      status: response.data.status
+      status: response.data.status,
+      symbol: response.data.symbol
     }
     return Promise.resolve(res);
     }).catch((error) => {

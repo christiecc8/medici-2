@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import { ProjectStatus, Project } from '../../model/projects'
 import { getContractCover } from '../../utils/retrieve'
-import { Modal, IconButton } from '@mui/material'
+import CreatedProjectModal from './CreatedProjectModal'
 import { RiCloseFill } from 'react-icons/ri'
+import useWallet from '../../hooks/useWallet'
 
 enum Tabs {
   ACTION = 'Action',
@@ -21,7 +22,7 @@ const CreatedProject: React.FC<{ contractName: string, project: Project }> = ({c
   const [currentAction, setCurrentAction] = useState<Actions>();
   const [showModal, setShowModal] = useState(false);
   const toggleModal = () => {setShowModal(!showModal)}
-  console.log("Show modal: " + showModal)
+  const { wallet } = useWallet();
 
   const getCover = useCallback(async () => {
     const res = await getContractCover(contractName)
@@ -91,34 +92,8 @@ const CreatedProject: React.FC<{ contractName: string, project: Project }> = ({c
       <div className="w-full h-screen object-cover overflow-hidden">
         { cover && <img src={cover} className="w-full h-full object-cover"/> }
       </div>
-      <div id="modal-container" className="flex items-center justify-center text-center">
-        <Modal
-          open={showModal}
-          onClose={toggleModal}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-        <div className="relative w-[400px] top-[20%] mx-auto p-5 text-white text-center rounded-2xl bg-zinc-400/5 backdrop-blur-lg border-white border-[1px] space-y-3 hero-collection flex flex-col items-center justify-center outline-none">
-        <IconButton
-        aria-label="close"
-        onClick={toggleModal}
-        sx={{
-          position: 'absolute',
-          right: 8,
-          top: 8
-        }}
-        >
-        <RiCloseFill color='white' />
-      </IconButton>
-        <h1 className="text-3xl m-2">🚀 What's New 🚀</h1>
-          <div className="space-y-3 w-4/5 mt-5">
-            <p> 💫 launch music NFTs and Mint Pages </p>
-            <p> 💫 manage project details and preview tokens </p>
-            <p> 💫 customize mint style and experience </p>
-          </div>
-          <img src={`${process.env.PUBLIC_URL}/medici_demo_1.gif`} className="w-1/2"/>
-        </div>
-        </Modal>
+      <div id="modal-container" className="flex items-center justify-center text-center{">
+        <CreatedProjectModal showModal={showModal} handleClose={toggleModal} project={project} wallet={wallet!} name={contractName}/>
       </div>
     </div>
   );

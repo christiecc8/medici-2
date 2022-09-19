@@ -261,3 +261,18 @@ export const getAllProjectsByAddress = async(walletAddress: string) => {
     return Promise.reject(error.message)
   })
 }
+
+export const getContractInfoByName = async(contractName: string) => {
+  const request_data = {
+    "collection": contractName
+  }
+
+  return apiClient
+  .get(API_PATHS.GET_CONTRACT_BY_NAME, { params: request_data })
+  .then(function(response) {
+    return Promise.resolve(response.data)
+  })
+  .catch(function(error) {
+    return Promise.reject(error.message)
+  })
+}
