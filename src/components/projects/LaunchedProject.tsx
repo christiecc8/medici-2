@@ -183,7 +183,7 @@ const LaunchedProject: React.FC<{ contractName: string, project: Project }> = ({
         { cover && <img src={cover} className="w-full h-full object-cover"/> }
       </div>
       <div id="modal-container" className="flex items-center justify-center text-center{">
-        { contract && <LaunchedProjectModal showModal={showModal} handleClose={toggleModal} contract={contract} action={currentAction} projectChain={projectChain}/>}
+        { contract && <LaunchedProjectModal showModal={showModal} handleClose={toggleModal} contract={contract} action={currentAction}/>}
       </div>
     </div>
   );

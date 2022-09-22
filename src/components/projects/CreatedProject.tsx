@@ -75,11 +75,11 @@ const CreatedProject: React.FC<{ contractName: string, project: Project }> = ({c
             <button className="text-left text-4xl text-[#676767] hover:text-white font-authentic"
             onClick={() => { setCurrentAction(Actions.LAUNCH); toggleModal() }}>LAUNCH PROJECT</button>
             <br></br>
-            <button className="text-left text-4xl text-[#676767] hover:text-white font-authentic"
+            {/* <button className="text-left text-4xl text-[#676767] hover:text-white font-authentic"
             onClick={() => { setCurrentAction(Actions.EDIT_COVER); toggleModal() }}>EDIT COVER</button>
             <br></br>
             <button className="text-left text-4xl text-[#676767] hover:text-white font-authentic"
-            onClick={() => { setCurrentAction(Actions.UPLOAD_ALLOWLIST); toggleModal() }}>UPLOAD ALLOWLIST</button>
+            onClick={() => { setCurrentAction(Actions.UPLOAD_ALLOWLIST); toggleModal() }}>UPLOAD ALLOWLIST</button> */}
           </div>
           ) : (
             <div className="space-y-5 my-10 ml-3">

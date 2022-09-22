@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react'
 import useWallet from '../../hooks/useWallet';
 import { Project } from '../../model/projects';
 import { Chain, Contract } from '../../model/types';
+import { INVALID_CHAIN } from '../../model/chains';
 import { utils } from 'ethers'
 import Modal from '@mui/material/Modal';
 import { IconButton } from '@mui/material';
@@ -14,15 +15,13 @@ const CreatedProjectModal: React.FC<{showModal: boolean, handleClose: any, proje
   const [step, setStep] = useState<number>(1)
   const [hasAllowlist, setHasAllowlist] = useState<boolean>()
   const [ContractCreationResult, setContractCreationResult] = useState<Contract>()
-  const { currentChain } = useWallet()
+  const {currentChain, setChain} = useWallet()
 
   const nextStep = () => {
     setStep(step + 1);
   };
 
   const generateSmartContract = async (merkleRoot: string, whitelistedAddresses: string[]) => {
-    console.log(project)
-    
     try {
         await generateNewContract(
           wallet,

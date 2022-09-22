@@ -5,6 +5,8 @@ import { API_PATHS, CONFIG } from './config';
 import apiClient from './apiClient';
 import { getChainConfig } from './retrieve';
 import { Chain } from '../model/types';
+import { WalletState } from '@web3-onboard/core';
+import { INVALID_CHAIN, OPTIMISM } from '../model/chains';
 const localenv = CONFIG.DEV;
 
 /* -------------------------------------------------------------------------- */
@@ -253,19 +255,24 @@ export const isValidAddress = (address: string) => {
   return utils.getAddress(address);
 };
 
-export const readyToTransact = async (
-  callerWallet: any,
-  connect: any,
-  setChain: any,
-  projectChain?: Chain
-) => {
-  if (projectChain) {
-    console.log("Setting chain to: " + projectChain.hexId)
-    return setChain({ chainId: projectChain.hexId });
+export const readyToTransact = async(connect: any, setChain: any, projectChain?: any, wallet?: any, currentChain?: any) => {
+  if (!wallet) {
+    return connect({
+      autoSelect: { 
+        label: 'Wallet Connect',
+        disableModals: false
+      }
+    })
   } else {
-    return Promise.resolve(false)
+    if (projectChain) {
+      return setChain({chainId: projectChain.hexId})
+    } else {
+      if (currentChain === INVALID_CHAIN) {
+        return setChain({chainId: OPTIMISM.hexId })
+      }
+    }
   }
-};
+}
 
 /* -------------------------------------------------------------------------- */
 /*                    Contract Instance Interaction Methods                   */

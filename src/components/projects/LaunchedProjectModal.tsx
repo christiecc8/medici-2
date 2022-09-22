@@ -5,14 +5,15 @@ import { getContractForTransactions, readyToTransact } from '../../utils/web3';
 import Modal from '@mui/material/Modal';
 import { IconButton, CircularProgress } from '@mui/material';
 import { RiCloseFill } from 'react-icons/ri';
-import { WalletState } from '@web3-onboard/core';
 import { utils } from 'ethers';
+import { GET_CHAIN_BY_ID } from '../../model/chains';
 
-const LaunchedProjectModal: React.FC<{showModal: boolean, handleClose: any, contract: Contract, action: any, projectChain?: Chain}> = ({showModal, handleClose, contract, action, projectChain}) => {
+const LaunchedProjectModal: React.FC<{showModal: boolean, handleClose: any, contract: Contract, action: any}> = ({showModal, handleClose, contract, action}) => {
   const [actionInProgress, setActionInProgress] = useState<boolean>()
   const [currentActionSuccess, setCurrentActionSuccess] = useState<boolean>()
   const [value, setValue] = useState<string>()
-  const {wallet, connect, setChain} = useWallet()
+  const {wallet, connect, setChain, currentChain} = useWallet()
+  const projectChain = GET_CHAIN_BY_ID(parseInt(contract?.chainid))
 
   const closeModal = () => {
     setValue("")
@@ -22,10 +23,10 @@ const LaunchedProjectModal: React.FC<{showModal: boolean, handleClose: any, cont
   }
 
   const onWithdraw = async () => {
+    await readyToTransact(connect, setChain, projectChain, wallet, currentChain)
     if (contract) {
       setActionInProgress(true)
       try {
-        await readyToTransact(wallet, connect, setChain, projectChain);
         const signedContract = await getContractForTransactions(wallet, contract.contractaddress)
         const tx = await signedContract.withdraw()
         const withdrawResponse = await tx.wait()
@@ -44,10 +45,10 @@ const LaunchedProjectModal: React.FC<{showModal: boolean, handleClose: any, cont
   }
 
   const onSetPrice = async(newPrice: string) => {
+    readyToTransact(connect, setChain, projectChain, wallet, currentChain)
     setActionInProgress(true)
     if (contract) {
       try {
-        await readyToTransact(wallet, connect, setChain, projectChain);
         const myContract = await getContractForTransactions(wallet, contract.contractaddress)
         console.log(myContract)
         await myContract.changePrice(utils.parseUnits(newPrice,'ether'))
@@ -66,10 +67,10 @@ const LaunchedProjectModal: React.FC<{showModal: boolean, handleClose: any, cont
   }
 
   const onSetMaxPerWallet = async(newMaxMintsPerPerson: string) => {
+    readyToTransact(connect, setChain, projectChain, wallet, currentChain)
     setActionInProgress(true)
     if (contract) {
       try {
-        await readyToTransact(wallet, connect, setChain, projectChain);
         const myContract = await getContractForTransactions(wallet, contract.contractaddress)
         await myContract.changeMaxMintPerPerson(newMaxMintsPerPerson)
         setCurrentActionSuccess(true)
@@ -87,9 +88,9 @@ const LaunchedProjectModal: React.FC<{showModal: boolean, handleClose: any, cont
   }
 
   const onSetClaimBlock = async (newClaimBlock: string) => {
+    readyToTransact(connect, setChain, projectChain, wallet, currentChain)
     if (contract) {
     try {
-      await readyToTransact(wallet, connect, setChain, projectChain);
       const myContract = await getContractForTransactions(wallet, contract.contractaddress)
       console.log(myContract)
       await myContract.changeClaimsPeriodStart(newClaimBlock)
@@ -104,9 +105,8 @@ const LaunchedProjectModal: React.FC<{showModal: boolean, handleClose: any, cont
   }
 
   const onSetMintBlock = async (newMintBlock: string) => {
-    console.log("Setting mint block")
+    readyToTransact(connect, setChain, projectChain, wallet, currentChain)
     if (contract) {
-      await readyToTransact(wallet, connect, setChain, projectChain);
       try {
         const myContract = await getContractForTransactions(wallet, contract.contractaddress)
         console.log(myContract)
@@ -122,8 +122,8 @@ const LaunchedProjectModal: React.FC<{showModal: boolean, handleClose: any, cont
   }
 
   const onTransferOwnership = async (newOwnerAddress: string) => {
+    readyToTransact(connect, setChain, projectChain, wallet, currentChain)
     if (contract) {
-      await readyToTransact(wallet, connect, setChain, projectChain);
       try {
         const myContract = await getContractForTransactions(wallet, contract.contractaddress)
         console.log(myContract)
