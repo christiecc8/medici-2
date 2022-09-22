@@ -16,7 +16,7 @@ const CuratedCollection: React.FC<{ collection: any }> = ({ collection }) => {
   const [thumbnails, setThumbnails] = useState<string[]>();
   const [previews, setPreviews] = useState<string[]>();
 
-  console.log(thumbnails);
+  console.log(collection)
 
   const getCollectionThumbnails = useCallback(async () => {
     try {
@@ -80,7 +80,7 @@ const CuratedCollection: React.FC<{ collection: any }> = ({ collection }) => {
       <div className="w-full flex flex-col md:flex-row">
         <div className="w-full md:w-1/2 flex flex-col-reverse h-full mb-4 md:mb-0">
           {collection && (
-            <h1 className="font-drukwide text-3xl md:text-6xl text-[#1E1E1E]">
+            <h1 className="font-drukwide text-3xl md:text-5xl text-[#1E1E1E]">
               {collection.name}
             </h1>
           )}
@@ -95,13 +95,19 @@ const CuratedCollection: React.FC<{ collection: any }> = ({ collection }) => {
         </div>
         <div className="w-full md:w-1/2 grid md:grid-cols-3 flex-2 gap-2">
           {thumbnails &&
-            Object.keys(thumbnails).map((thumbnail: any, i) => (
-              <ThumbnailCard
-                name={collection.name}
-                image={thumbnails[i]}
-                index={i}
-                key={collection.name - i}
-              />
+            Object.keys(thumbnails).slice(0, 3).map((thumbnail: any, i) => (
+              <a
+              href={`/page/${collection.name}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              >
+                <ThumbnailCard
+                  name={collection.name}
+                  image={thumbnails[i]}
+                  index={i}
+                  key={collection.name - i}
+                />
+              </a>
             ))}
         </div>
         {/* { previews && previews.map((preview: any, i) => (
