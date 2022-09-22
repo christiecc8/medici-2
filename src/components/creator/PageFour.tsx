@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { StepperFormProps } from '../../model/types';
-import { triggerUploadImageData, createZip, triggerUploadMusicData, getUploadPreview } from '../../utils/upload';
+import { triggerUploadImageData, createZip, triggerUploadMusicData, createProject } from '../../utils/upload';
+import useWallet from '../../hooks/useWallet';
+import { Link } from 'react-router-dom';
 
 import Modal from '@mui/material/Modal';
 import LinearProgress from '@mui/material/LinearProgress';
-import { getMetadata } from '../../utils/retrieve';
 
 const PageFour: React.FC<StepperFormProps> = ({
     nextStep,
@@ -19,15 +20,16 @@ const PageFour: React.FC<StepperFormProps> = ({
     const [imageUploadResponse, setImageUploadResponse] = useState<any>();
     const [imageUploadSuccess, setImageUploadSuccess] = useState<boolean>(false)
     const [metadataFromIPFS, setMetadataFromIPFS] = useState<any>();
+    const { wallet, connect } = useWallet()
 
-    const onSubmit = () => {
-      // handleOpen();
-      if (!imageUploadSuccess) {
-        alert("Please upload your project!")
-      } else {
-        nextStep();
-      }
-    }
+    // const onSubmit = () => {
+    //   // handleOpen();
+    //   if (!imageUploadSuccess) {
+    //     alert("Please upload your project!")
+    //   } else {
+    //     nextStep();
+    //   }
+    // }
 
     useEffect(() => {
       if (showModal) {
@@ -39,6 +41,13 @@ const PageFour: React.FC<StepperFormProps> = ({
     },[showModal])
 
     const uploadImageData = async (files: FileList) => {
+      if (!wallet) {
+      await connect({
+        autoSelect: { 
+          label: 'Wallet Connect',
+          disableModals: false
+        }
+      }) }
       if (files === null || files === undefined) {
         setShowLoader(false);
         return;
@@ -75,18 +84,21 @@ const PageFour: React.FC<StepperFormProps> = ({
           const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total)
           setUploadProgress(progress);
         })
-        if (res) {
-        setTimeout(async () => {
-        const preview = await getUploadPreview(data.name);
-        setImageUploadResponse(preview);
-        const metadata = await getMetadata(preview.randomMetadataURL);
-        setMetadataFromIPFS(JSON.stringify(metadata, null, 2));
-        await handleInputData("baseURI", preview.baseURI);
-        await handleInputData("maxSupply", preview.totalSupply);
-        setShowLoader(false);
+        if (res && wallet) {
+      //   setTimeout(async () => {
+      //   const preview = await getUploadPreview(data.name);
+      //   setImageUploadResponse(preview);
+      //   const metadata = await getMetadata(preview.randomMetadataURL);
+      //   setMetadataFromIPFS(JSON.stringify(metadata, null, 2));
+      //   await handleInputData("baseURI", preview.baseURI);
+      //   await handleInputData("maxSupply", preview.totalSupply);
+      //   setShowLoader(false);
+      //   handleOpen();
+      //   setImageUploadSuccess(true);
+      // }, 5000);
+        await createProject(data.name, wallet.accounts[0].address)
         handleOpen();
         setImageUploadSuccess(true);
-      }, 5000);
       }} catch (error: any) {
         if (error.msg) {
           alert(error.msg)
@@ -138,9 +150,9 @@ const PageFour: React.FC<StepperFormProps> = ({
         </div>
       </div>
       }
-      <div className="flex justify-end w-full absolute bottom-24 right-10">
+      {/* <div className="flex justify-end w-full absolute bottom-24 right-10">
         <button className="text-[#8E00FF] text-2xl" onClick={onSubmit}>Next</button>
-      </div>
+      </div> */}
       { showLoader && <div className="w-4/5">
       <h1>Hang tight, your art is uploading! May take a few minutes for larger media and leaving will cancel upload.</h1>
       <LinearProgress
@@ -161,13 +173,18 @@ const PageFour: React.FC<StepperFormProps> = ({
         aria-describedby="modal-modal-description"
       >
       <div className="relative top-[20%] mx-auto p-5 w-96 h-[550px] shadow-lg rounded-2xl bg-[#2e2c38] text-white flex flex-col items-center justify-center outline-none">
-      <h1 className="text-center text-4xl mb-5">Upload Preview</h1>
+      {/* <h1 className="text-center text-4xl mb-5">Upload Preview</h1>
       {imageUploadResponse && <img src={imageUploadResponse.randomFileURL}/>}
       {(imageUploadResponse && metadataFromIPFS) &&
       <div className="flex flex-col w-[300px] overflow-scroll border-[1px] border-white p-2 mt-3">
       <p>{JSON.stringify(metadataFromIPFS)}</p>
       </div>}
-      {imageUploadResponse && <p>Total supply: {imageUploadResponse.totalSupply}</p>}
+      {imageUploadResponse && <p>Total supply: {imageUploadResponse.totalSupply}</p>} */}
+        <h1>Upload success!</h1>
+        <Link 
+          to={`/projects`}
+          className="bg-medici-purple text-white text-center  p-3 rounded-3xl w-[200px] whitespace-nowrap"
+        >Projects</Link>
       </div>
       </Modal>
       </div>

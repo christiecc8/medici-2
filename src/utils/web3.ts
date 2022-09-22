@@ -5,6 +5,8 @@ import { API_PATHS, CONFIG } from './config';
 import apiClient from './apiClient';
 import { getChainConfig } from './retrieve';
 import { Chain } from '../model/types';
+import { WalletState } from '@web3-onboard/core';
+import { INVALID_CHAIN, OPTIMISM } from '../model/chains';
 const localenv = CONFIG.DEV;
 
 /* -------------------------------------------------------------------------- */
@@ -253,29 +255,24 @@ export const isValidAddress = (address: string) => {
   return utils.getAddress(address);
 };
 
-export const readyToTransact = async (
-  callerWallet: any,
-  connect: any,
-  setChain: any
-): Promise<boolean> => {
-  if (!callerWallet) {
-    await connect({
-      autoSelect: {
-        label: '0xa',
-        disableModals: false,
-      },
-    });
-  }
-
-  if (
-    callerWallet.chains[0].id !== '0xa' &&
-    callerWallet.chains[0].id !== '0x5'
-  ) {
-    return setChain({ chainId: '0xa' });
+export const readyToTransact = async(connect: any, setChain: any, projectChain?: any, wallet?: any, currentChain?: any) => {
+  if (!wallet) {
+    return connect({
+      autoSelect: { 
+        label: 'Wallet Connect',
+        disableModals: false
+      }
+    })
   } else {
-    return Promise.resolve(true);
+    if (projectChain) {
+      return setChain({chainId: projectChain.hexId})
+    } else {
+      if (currentChain === INVALID_CHAIN) {
+        return setChain({chainId: OPTIMISM.hexId })
+      }
+    }
   }
-};
+}
 
 /* -------------------------------------------------------------------------- */
 /*                    Contract Instance Interaction Methods                   */

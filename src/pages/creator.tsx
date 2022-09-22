@@ -78,22 +78,22 @@ const Creator: React.FC<{}> = () => {
           data={params}
         />
       );
-    case 5:
-      return (
-        <PageFive
-          nextStep={nextStep}
-          handleInputData={handleInputData}
-          data={params}
-        />
-      );
-    case 6:
-      return (
-        <PageSix
-          nextStep={nextStep}
-          handleInputData={handleInputData}
-          data={params}
-        />
-      );
+    // case 5:
+    //   return (
+    //     <PageFive
+    //       nextStep={nextStep}
+    //       handleInputData={handleInputData}
+    //       data={params}
+    //     />
+    //   );
+    // case 6:
+    //   return (
+    //     <PageSix
+    //       nextStep={nextStep}
+    //       handleInputData={handleInputData}
+    //       data={params}
+    //     />
+    //   );
     default:
       return <div className="App"></div>;
   }
