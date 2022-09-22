@@ -36,8 +36,6 @@ const LaunchedProject: React.FC<{ contractName: string, project: Project }> = ({
   const toggleModal = () => {setShowModal(!showModal)}
   const projectChain = contract && GET_CHAIN_BY_ID(parseInt(contract.chainid));
 
-  const { wallet } = useWallet();
-
   const getCover = useCallback(async () => {
     const res = await getContractCover(contractName)
     setCover(res)
@@ -185,7 +183,7 @@ const LaunchedProject: React.FC<{ contractName: string, project: Project }> = ({
         { cover && <img src={cover} className="w-full h-full object-cover"/> }
       </div>
       <div id="modal-container" className="flex items-center justify-center text-center{">
-        { contract && <LaunchedProjectModal showModal={showModal} handleClose={toggleModal} contract={contract} action={currentAction}/>}
+        { contract && <LaunchedProjectModal showModal={showModal} handleClose={toggleModal} contract={contract} action={currentAction} projectChain={projectChain}/>}
       </div>
     </div>
   );
