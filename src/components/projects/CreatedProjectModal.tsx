@@ -22,6 +22,7 @@ const CreatedProjectModal: React.FC<{showModal: boolean, handleClose: any, proje
 
   const generateSmartContract = async (merkleRoot: string, whitelistedAddresses: string[]) => {
     console.log(project)
+    
     try {
         await generateNewContract(
           wallet,

@@ -7,6 +7,7 @@ import { GET_CHAIN_BY_ID } from '../../model/chains'
 import { getContract } from '../../utils/web3'
 import useWallet from '../../hooks/useWallet'
 import { utils } from 'ethers'
+import LaunchedProjectModal from './LaunchedProjectModal'
 
 enum Tabs {
   ACTION = 'Action',
@@ -14,9 +15,12 @@ enum Tabs {
 }
 
 enum Actions {
-  LAUNCH = 'Launch',
-  EDIT_COVER = 'Edit Cover',
-  UPLOAD_ALLOWLIST = 'Upload Allowlist'
+  WITHDRAW = 'Withdraw',
+  SET_PRICE = 'SetPrice',
+  SET_MAX_PER_WALLET = 'SetMaxPerWallet',
+  SET_CLAIM_BLOCK = 'SetClaimBlock',
+  SET_MINT_BLOCK = 'SetMintBlock',
+  TRANSFER_OWNERSHIP = 'TransferOwnership'
 }
 
 const LaunchedProject: React.FC<{ contractName: string, project: Project }> = ({contractName, project}) => {
@@ -61,6 +65,7 @@ const LaunchedProject: React.FC<{ contractName: string, project: Project }> = ({
   useEffect(() => {
     if (!cover) getCover()
     if (!contract) getContractInfo()
+    if (!balance && !price && !numMinted && !maxSupply) getContractDetails()
   }, [
     cover, setCover,
     contract, setContract
@@ -106,13 +111,23 @@ const LaunchedProject: React.FC<{ contractName: string, project: Project }> = ({
           {currentTab === Tabs.ACTION ? (
           <div className="my-10 ml-3 space-y-5">
             <button className="text-left text-4xl text-[#676767] hover:text-white font-authentic"
-            onClick={() => { setCurrentAction(Actions.LAUNCH); toggleModal() }}>WITHDRAW FUNDS</button>
+            onClick={() => { setCurrentAction(Actions.WITHDRAW); toggleModal() }}>WITHDRAW FUNDS</button>
             <br></br>
             <button className="text-left text-4xl text-[#676767] hover:text-white font-authentic"
-            onClick={() => { setCurrentAction(Actions.EDIT_COVER); toggleModal() }}>SET PRICE</button>
+            onClick={() => { setCurrentAction(Actions.SET_PRICE); toggleModal() }}>SET PRICE</button>
             <br></br>
             <button className="text-left text-4xl text-[#676767] hover:text-white font-authentic"
-            onClick={() => { setCurrentAction(Actions.UPLOAD_ALLOWLIST); toggleModal() }}>SET MAX # PER WALLET</button>
+            onClick={() => { setCurrentAction(Actions.SET_MAX_PER_WALLET); toggleModal() }}>SET MAX PER WALLET</button>
+            <br></br>
+            <button className="text-left text-4xl text-[#676767] hover:text-white font-authentic"
+            onClick={() => { setCurrentAction(Actions.SET_CLAIM_BLOCK); toggleModal() }}>SET CLAIM BLOCK</button>
+            <br></br>
+            <button className="text-left text-4xl text-[#676767] hover:text-white font-authentic"
+            onClick={() => { setCurrentAction(Actions.SET_MINT_BLOCK); toggleModal() }}>SET MINT BLOCK</button>
+            <br></br>
+            <button className="text-left text-4xl text-[#676767] hover:text-white font-authentic"
+            onClick={() => { setCurrentAction(Actions.TRANSFER_OWNERSHIP); toggleModal() }}>TRANSFER OWNERSHIP</button>
+            <br></br>
           </div>
           ) : (
             <div className="space-y-5 my-10 ml-3">
@@ -121,8 +136,11 @@ const LaunchedProject: React.FC<{ contractName: string, project: Project }> = ({
           <table className="w-full">
             <tbody>
               <tr>
+                <td>Balance</td>
+                <td className="text-right">{balance} ETH</td>
+              </tr>
+              <tr>
                 <td>Contract Address</td>
-               
                 <td className="text-right text-white">
                 <a
                   href={`${projectChain!.etherscanUrl}/address/${
@@ -151,10 +169,10 @@ const LaunchedProject: React.FC<{ contractName: string, project: Project }> = ({
                 <td>Blockchain</td>
                 <td className="text-right">{projectChain!.label}</td>
               </tr>
-              {/* <tr>
+              <tr>
                 <td>Number Minted</td>
-                <td className="text-right">{numMinted}/{totalSupply}</td>
-              </tr> */}
+                <td className="text-right">{numMinted}/{maxSupply}</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -167,7 +185,7 @@ const LaunchedProject: React.FC<{ contractName: string, project: Project }> = ({
         { cover && <img src={cover} className="w-full h-full object-cover"/> }
       </div>
       <div id="modal-container" className="flex items-center justify-center text-center{">
-        <CreatedProjectModal showModal={showModal} handleClose={toggleModal} project={project} wallet={wallet!} name={contractName}/>
+        { contract && <LaunchedProjectModal showModal={showModal} handleClose={toggleModal} contract={contract} action={currentAction}/>}
       </div>
     </div>
   );
