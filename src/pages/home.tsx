@@ -60,7 +60,7 @@ useEffect(() => {
       </div> 
       <HomeMenu/>
       <div id="modal-container" className="flex items-center justify-center text-center h-screen">
-      <Modal
+      {/* <Modal
             open={showModal}
             onClose={toggleModal}
             aria-labelledby="modal-modal-title"
@@ -119,9 +119,9 @@ useEffect(() => {
           </ul>
             </div>
             {/* <img src={`${process.env.PUBLIC_URL}/medici_demo_1.gif`} className="w-1/2"/> */}
-          </div>
-          </Modal>
-          {/* <Modal
+          {/* </div>
+          </Modal> */}
+          <Modal
             open={showModal}
             onClose={toggleModal}
             aria-labelledby="modal-modal-title"
@@ -147,7 +147,7 @@ useEffect(() => {
             </div>
             <img src={`${process.env.PUBLIC_URL}/medici_demo_1.gif`} className="w-1/2"/>
           </div>
-          </Modal> */}
+          </Modal>
       </div>
       </div>
   )

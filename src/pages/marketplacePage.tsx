@@ -31,13 +31,16 @@ const Marketplace: React.FC<{}> = () => {
     <div className="w-full flex flex-col items-center">
       <Background />
       <Header />
+      <div className="w-4/5 z-20 mt-10 space-y-5">
+        <h1 className="text-black text-2xl">Welcome to the Medici Gallery. This is where you can explore the art and music NFTs that has been launched with our Creator tool.</h1>
+      </div>
       <Hero hero={heroCollection} />
       <h1 className="font-drukwide header-title text-3xl text-left">
         Curated Collections
       </h1>
       {curatedCollections &&
         curatedCollections.map((collection: any) => (
-          <CuratedCollection collection={collection} />
+          <CuratedCollection collection={collection} key={collection.name}/>
         ))}
 
       <div className="w-full z-10 mt-10">

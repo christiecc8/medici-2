@@ -32,6 +32,7 @@ const ImageCollections: React.FC<{}> = () => {
             artist={col.artist}
             name={col.name}
             image={col.cover_cdn_thumbnail_url}
+            key={`${col.name}-${i}`}
           />
         ))}
     </div>

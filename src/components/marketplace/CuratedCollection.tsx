@@ -16,8 +16,6 @@ const CuratedCollection: React.FC<{ collection: any }> = ({ collection }) => {
   const [thumbnails, setThumbnails] = useState<string[]>();
   const [previews, setPreviews] = useState<string[]>();
 
-  console.log(collection)
-
   const getCollectionThumbnails = useCallback(async () => {
     try {
       if (collection) {
@@ -100,20 +98,17 @@ const CuratedCollection: React.FC<{ collection: any }> = ({ collection }) => {
               href={`/page/${collection.name}`}
               target="_blank"
               rel="noopener noreferrer"
+              key={`${collection.name}-${i}`}
               >
                 <ThumbnailCard
                   name={collection.name}
                   image={thumbnails[i]}
                   index={i}
-                  key={collection.name - i}
+                  key={`${collection.name}-${i}`}
                 />
               </a>
             ))}
         </div>
-        {/* { previews && previews.map((preview: any, i) => (
-      <PreviewCard name={collection.name} image={collection.cover_cdn_url} index={i}/>
-      ))
-      } */}
       </div>
     </div>
   );
