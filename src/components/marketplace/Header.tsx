@@ -22,7 +22,7 @@ const Header: React.FC<{}> = () => {
           <Link to="/about" className="hidden md:block">
             About
           </Link> */}
-        <a href="/home" className="rounded-3xl bg-[#1E1E1E] text-white w-24 flex items-center justify-center h-10 font-authentic self-start order-1">
+        <a href="/home" className="rounded-3xl bg-[#1E1E1E] text-white w-48 flex items-center justify-center h-10 font-authentic self-start order-1">
           Launch
         </a>
     </header>
