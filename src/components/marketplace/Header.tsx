@@ -13,7 +13,7 @@ const Header: React.FC<{}> = () => {
       <Link to="/" className="flex align-center self-start order-0">
         <img src="/logo-medici-dark.svg" alt="" className="mr-4" />
       </Link>
-      <h1 className="font-drukwide header-title w-full md:w-auto mt-4 md:mt-0 text-3xl md:text-5xl text-center leading-none order-2 md:order-1">
+      <h1 className="font-drukwide header-title w-full md:w-auto text-3xl md:text-5xl text-center leading-none order-2 md:order-1">
         GALLERY
       </h1>
       {/* <Link to="/explore" className="hidden md:block">
@@ -22,8 +22,8 @@ const Header: React.FC<{}> = () => {
           <Link to="/about" className="hidden md:block">
             About
           </Link> */}
-        <a href="/home" className="rounded-3xl bg-[#1E1E1E] text-white w-24 flex items-center justify-center h-10 font-authentic self-start order-1">
-          Create
+        <a href="/home" className="rounded-3xl bg-[#1E1E1E] text-white w-48 flex items-center justify-center h-10 font-authentic self-start order-1">
+          Launch
         </a>
     </header>
   );
